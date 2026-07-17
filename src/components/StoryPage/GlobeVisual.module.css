@@ -1,0 +1,16 @@
+.root {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.root :global(> div) {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.root :global([aria-label='Created using amCharts 5']) {
+  display: none !important;
+}

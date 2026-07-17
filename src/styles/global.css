@@ -1,0 +1,297 @@
+@import '@evergreen/components/style.css';
+
+:root {
+  --site-header-brand-logo-height: var(--control-icon-xs);
+  --site-max-width: 1400px;
+  --site-h2-size: clamp(36px, 4.44vw, var(--typography-headline-large-size));
+  --reveal-initial-offset: var(--spacing-3);
+  --reveal-offset: var(--spacing-7);
+  --site-hover-duration: 500ms;
+  --site-transform-duration: 220ms;
+  --site-button-hover-duration: 350ms;
+  --site-hover-easing: cubic-bezier(0.4, 0, 0.2, 1);
+  --site-dropdown-shadow: 0 var(--spacing-2) var(--spacing-6) color-mix(in srgb, #000 8%, transparent);
+  --site-header-liquid-blur: 3px; /* 模糊 */
+  --site-header-liquid-contrast: 1.2; /* 对比度 */
+  --site-header-liquid-brightness: 1.05; /* 亮度 */
+  --site-header-liquid-saturate: 1.1; /* 饱和度 */
+  --site-header-liquid-surface: color-mix(in display-p3, var(--eds-face) 88%, transparent); /* 背景色 */
+  --site-header-liquid-shader-edge-start: 0.8; /* 边缘开始 */
+  --site-header-liquid-shader-edge-end: 0.01; /* 边缘结束 */
+  --site-header-liquid-shader-edge-offset: 0.15; /* 边缘偏移 */
+  --site-header-liquid-shader-rect-inset-x: 0.2; /* 矩形内边距 */
+  --site-header-liquid-shader-rect-inset-y: 0.15; /* 矩形内边距 */    
+  --site-header-liquid-shader-corner-radius: 1; /* 圆角 */
+  --site-header-liquid-shader-interior-refraction: 6; /* 中间区域折射强度（px） */
+  --site-header-liquid-shader-interior-frequency-x: 1.2; /* 横向折射波形频率 */
+  --site-header-liquid-shader-interior-frequency-y: 0.8; /* 纵向折射波形频率 */
+  --site-header-liquid-refraction-scale: 0.5; /* 折射比例 */
+  --site-product-menu-liquid-blur: 8px; /* 产品菜单模糊 */
+  
+  --site-product-menu-liquid-contrast: var(--site-header-liquid-contrast);
+  --site-product-menu-liquid-brightness: var(--site-header-liquid-brightness);
+  --site-product-menu-liquid-saturate: var(--site-header-liquid-saturate);
+  --site-product-menu-liquid-surface: var(--site-header-liquid-surface);
+  --site-product-menu-liquid-shader-edge-start: var(--site-header-liquid-shader-edge-start);
+  --site-product-menu-liquid-shader-edge-end: var(--site-header-liquid-shader-edge-end);
+  --site-product-menu-liquid-shader-edge-offset: var(--site-header-liquid-shader-edge-offset);
+  --site-product-menu-liquid-shader-rect-inset-x: var(--site-header-liquid-shader-rect-inset-x);
+  --site-product-menu-liquid-shader-rect-inset-y: var(--site-header-liquid-shader-rect-inset-y);
+  --site-product-menu-liquid-shader-corner-radius: var(--site-header-liquid-shader-corner-radius);
+  --site-product-menu-liquid-shader-interior-refraction: var(--site-header-liquid-shader-interior-refraction);
+  --site-product-menu-liquid-shader-interior-frequency-x: var(--site-header-liquid-shader-interior-frequency-x);
+  --site-product-menu-liquid-shader-interior-frequency-y: var(--site-header-liquid-shader-interior-frequency-y);
+  --site-product-menu-liquid-refraction-scale: var(--site-header-liquid-refraction-scale);
+
+  /* GlobeVisual — 改色后 dev 模式约 200ms 内刷新 canvas */
+  --site-globe-brand-deep: #0066ff; /* 弧线节点圆点 */
+  --site-globe-brand-primary: #0066ff; /* 弧线 / 经纬线 / 流动粒子 */
+  --site-globe-producer: #9bbff5; /* 生产国陆地：薄荷绿，与浅蓝色系协调 */
+  --site-globe-brand-mid: #a3d0f4; /* 枢纽国陆地：中蓝 */
+  --site-globe-brand-light: #cee9ff; /* 消费国陆地 / 节点描边：浅天蓝 */
+  --site-globe-brand-pale: #e9f7ff; /* 默认陆地：冷白蓝 */
+  --site-globe-brand-stroke: #c9daeb; /* 陆地描边：灰蓝 */
+  --site-globe-graticule-opacity: 0.1; /* 经纬线透明度 */
+  --site-globe-land-stroke-opacity: 0.8; /* 陆地描边透明度 */
+  --site-globe-arc-opacity: 0.25; /* 弧线透明度 */
+  --site-globe-node-fill-opacity: 0.95; /* 节点圆点透明度 */
+  --site-globe-bullet-radius: 2.5; /* 流动粒子半径 */
+}
+
+:root:lang(zh-CN) {
+  --site-h2-size: clamp(32px, 3.89vw, var(--typography-headline-medium-size));
+}
+
+:root,
+[data-theme='light'] {
+  --eds-brand: #0066ff;
+  --eds-brand: color(display-p3 0 0.4 1);
+  --content-background: #ffffff;
+  --nav-background: #f1f1ed;
+}
+
+[data-theme='dark'] {
+  --eds-brand: #287dff;
+  --eds-brand: color(display-p3 0.1569 0.4902 1);
+  --content-background: #1b1c1f;
+  --nav-background: #1d1e21;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  background: var(--box-page);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-text);
+  font-size: var(--typography-body-small-size);
+  line-height: var(--typography-body-small-line-height);
+  font-synthesis: none;
+  color: var(--text-base-primary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.015em;
+}
+
+h2 {
+  font-size: var(--site-h2-size);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  summary,
+  [role='button'],
+  [role='link'],
+  [role='tab']
+) {
+  transition:
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    background var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    border-color var(--site-hover-duration) var(--site-hover-easing),
+    outline-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing),
+    opacity var(--site-hover-duration) var(--site-hover-easing);
+}
+
+:where(a, button):hover:not(
+    [class*='download'],
+    [class*='primaryAction'],
+    [class*='homePrimaryAction'],
+    [class*='navLink'],
+    [class*='dropdownOption'],
+    [class*='productCard'],
+    [class*='iconButton'],
+    [class*='localeOption'],
+    [class*='menuButton'],
+    [class*='showcaseCard'],
+    [class*='showcaseCardsNav'],
+    [class*='brand'],
+    [class*='textLink']
+  ) {
+  box-shadow: inset 0 0 0 999px var(--event-hover);
+}
+
+/* 按钮：有背景色的填充 CTA，共用 Download 交互。尺寸由 padding 控制，字号各组件自定。 */
+a[class*='download'],
+button[class*='primaryAction']:not([class*='homePrimaryAction']) {
+  transition:
+    background-color var(--site-button-hover-duration) ease-in-out,
+    color var(--site-button-hover-duration) ease-in-out,
+    border-color var(--site-button-hover-duration) ease-in-out,
+    box-shadow var(--site-button-hover-duration) ease-in-out;
+}
+
+a[class*='download'],
+button[class*='primaryAction']:not([class*='homePrimaryAction']):not(:disabled) {
+  background-color: var(--material-brand-primary);
+  color: var(--text-same-white-primary);
+}
+
+a[class*='download']:hover,
+button[class*='primaryAction']:not([class*='homePrimaryAction']):hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--material-brand-primary) 80%, transparent);
+  color: var(--text-same-white-primary);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+a[class*='download']:active,
+button[class*='primaryAction']:not([class*='homePrimaryAction']):active:not(:disabled) {
+  background-color: var(--material-brand-primary);
+  color: color-mix(in srgb, var(--text-same-white-primary) 60%, transparent);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* 独立按钮：首页 BubbleButton，与填充/文字按钮无关。 */
+[data-bubble-button] button[class*='homePrimaryAction'],
+[data-bubble-button] button[class*='homePrimaryAction']:hover:not(:disabled),
+[data-bubble-button] button[class*='homePrimaryAction']:active:not(:disabled) {
+  background-color: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-same-white-primary) !important;
+}
+
+/* 文字按钮：无背景，悬浮 60% 不透明度，点击恢复 100%。 */
+a[class*='textLink'] {
+  background-color: transparent;
+  color: var(--text-brand-primary);
+  transition:
+    opacity var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+a[class*='textLink']:hover {
+  opacity: 0.6;
+  background-color: transparent;
+  color: var(--text-brand-primary);
+  box-shadow: none;
+}
+
+a[class*='textLink']:active {
+  opacity: 1;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--material-brand-primary) 28%, transparent);
+}
+
+html.is-scrolling [data-animation-region] *,
+html.is-scrolling [data-animation-region] *::before,
+html.is-scrolling [data-animation-region] *::after {
+  animation-play-state: paused !important;
+}
+
+[data-reveal] {
+  opacity: 1;
+  transform: translateY(var(--reveal-initial-offset));
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-reveal].reveal-from-top {
+  transform: translateY(calc(var(--reveal-initial-offset) * -1));
+}
+
+[data-reveal].reveal-repeat {
+  transform: translateY(var(--reveal-offset));
+}
+
+[data-reveal].reveal-repeat.reveal-from-top {
+  transform: translateY(calc(var(--reveal-offset) * -1));
+}
+
+[data-reveal].reveal-repeat.reveal-from-top.is-visible,
+[data-reveal].reveal-repeat.is-visible,
+[data-reveal].reveal-from-top.is-visible,
+[data-reveal].is-visible {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  :where(
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [role='button'],
+    [role='link'],
+    [role='tab']
+  ) {
+    transition-duration: 1ms !important;
+  }
+
+  [data-reveal],
+  [data-reveal].reveal-from-top,
+  [data-reveal].reveal-repeat,
+  [data-reveal].reveal-repeat.reveal-from-top {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
