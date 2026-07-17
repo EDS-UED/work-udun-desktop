@@ -5,10 +5,10 @@ import { useI18n } from 'vue-i18n';
 import BubbleButton from '@/components/BubbleButton/BubbleButton.vue';
 import ProductWindowMock from '@/components/StoryPage/ProductWindowMock.vue';
 import GlobeVisual from '@/components/StoryPage/GlobeVisual.vue';
-import RotatingInline, {
-  type RotatingInlineItem,
-} from '@/components/RotatingInline/RotatingInline.vue';
+import RotatingInline from '@/components/RotatingInline/RotatingInline.vue';
 import { siteContent, type SiteContent } from '@/content/siteContent';
+import { publicAsset } from '@/utils/publicAsset';
+import { buildAssetRotationItems } from './showcaseGrid';
 import styles from './StoryPage.module.css';
 
 const props = defineProps<{
@@ -30,18 +30,12 @@ const showcaseCanScrollRight = ref(false);
 let animationObserver: IntersectionObserver | undefined;
 const showcaseScrollEpsilon = 2;
 const showcaseFadeWidth = 'clamp(24px, 3.5vw, 48px)';
-const assetPlaceholders: RotatingInlineItem[] = [
-  { label: 'BTC', src: '/eds-ban-btc.svg' },
-  { label: 'ETH', src: '/eds-ban-eth.svg' },
-  { label: 'USDT', src: '/eds-ban-udst.svg' },
-  { label: 'BNB', src: '/eds-ban-bnb.svg' },
-  { label: 'SOL', src: '/eds-ban-sol.svg' },
-  { label: 'TRX', src: '/eds-ban-trx.svg' },
-  { label: 'SUI', src: '/eds-ban-sui.svg' },
-  { label: 'XRP', src: '/eds-ban-xrp.svg' },
-  { label: 'USDC', src: '/eds-ban-usdc.svg' },
-  { label: 'LINK', src: '/eds-ban-link.svg' },
-];
+const assetPlaceholders = buildAssetRotationItems(publicAsset);
+const textLinkIconMask = `url(${publicAsset('/eds-arrow-right.svg')})`;
+const expertVideoSrc = publicAsset('/udun-expert-commentary.mp4');
+const arrowLeftSrc = publicAsset('/eds-arrow-left.svg');
+const arrowRightSrc = publicAsset('/eds-arrow-right.svg');
+const faviconSrc = publicAsset('/favicon.svg');
 const showcaseGridColumns = Array.from({ length: 15 }, (_, index) => {
   const x = index * 100;
   const floorX = 700 + (x - 700) * 1.35;
@@ -152,7 +146,11 @@ onBeforeUnmount(() => animationObserver?.disconnect());
 </script>
 
 <template>
-  <article ref="pageRoot" :class="styles.page">
+  <article
+    ref="pageRoot"
+    :class="styles.page"
+    :style="{ '--text-link-icon-mask': textLinkIconMask }"
+  >
     <section :class="[styles.hero, page === 'home' && styles.homeHero]">
       <div :class="styles.heroCopy" data-reveal data-animation-region>
         <p v-if="content.eyebrow" :class="styles.eyebrow">{{ content.eyebrow }}</p>
@@ -299,7 +297,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
           <div :class="styles.showcaseAvatar" aria-hidden="true">
             <video
               :class="styles.expertVideo"
-              src="/udun-expert-commentary.mp4"
+              :src="expertVideoSrc"
               autoplay
               loop
               muted
@@ -333,7 +331,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
           >
             <img
               :class="styles.showcaseCardsNavIcon"
-              src="/eds-arrow-left.svg"
+              :src="arrowLeftSrc"
               alt=""
             />
           </button>
@@ -350,7 +348,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
           >
             <img
               :class="styles.showcaseCardsNavIcon"
-              src="/eds-arrow-right.svg"
+              :src="arrowRightSrc"
               alt=""
             />
           </button>
@@ -509,7 +507,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
             <span>Ownership</span>
             <span>MCP</span>
             <span>
-              <img src="/favicon.svg" alt="" />
+              <img :src="faviconSrc" alt="" />
             </span>
             <span>SIGN</span>
           </template>

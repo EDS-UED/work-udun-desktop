@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     baseURL,
     head: {
       htmlAttrs: {
-        lang: 'zh-CN',
+        lang: 'en-US',
         'data-platform': 'website',
         'data-theme': 'light',
       },
@@ -23,7 +23,13 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
-      link: [{ rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          href: `${baseURL.endsWith('/') ? baseURL : `${baseURL}/`}favicon.svg`,
+        },
+      ],
       script: [
         {
           innerHTML:

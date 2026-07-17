@@ -5,18 +5,27 @@ function buildColumnPath(x: number) {
   return `M ${x} 0 L ${x} 412 Q ${x} 500 ${floorX} 824`;
 }
 
-export const ASSET_ROTATION_ITEMS: RotatingInlineItem[] = [
-  { label: 'BTC', src: '/eds-ban-btc.svg' },
-  { label: 'ETH', src: '/eds-ban-eth.svg' },
-  { label: 'USDT', src: '/eds-ban-udst.svg' },
-  { label: 'BNB', src: '/eds-ban-bnb.svg' },
-  { label: 'SOL', src: '/eds-ban-sol.svg' },
-  { label: 'TRX', src: '/eds-ban-trx.svg' },
-  { label: 'SUI', src: '/eds-ban-sui.svg' },
-  { label: 'XRP', src: '/eds-ban-xrp.svg' },
-  { label: 'USDC', src: '/eds-ban-usdc.svg' },
-  { label: 'LINK', src: '/eds-ban-link.svg' },
-];
+export const ASSET_ROTATION_LABELS = [
+  { label: 'BTC', file: 'eds-ban-btc.svg' },
+  { label: 'ETH', file: 'eds-ban-eth.svg' },
+  { label: 'USDT', file: 'eds-ban-udst.svg' },
+  { label: 'BNB', file: 'eds-ban-bnb.svg' },
+  { label: 'SOL', file: 'eds-ban-sol.svg' },
+  { label: 'TRX', file: 'eds-ban-trx.svg' },
+  { label: 'SUI', file: 'eds-ban-sui.svg' },
+  { label: 'XRP', file: 'eds-ban-xrp.svg' },
+  { label: 'USDC', file: 'eds-ban-usdc.svg' },
+  { label: 'LINK', file: 'eds-ban-link.svg' },
+] as const;
+
+export function buildAssetRotationItems(
+  resolveSrc: (path: string) => string,
+): RotatingInlineItem[] {
+  return ASSET_ROTATION_LABELS.map(({ label, file }) => ({
+    label,
+    src: resolveSrc(`/${file}`),
+  }));
+}
 
 export const SHOWCASE_GRID_COLUMNS = Array.from({ length: 15 }, (_, index) =>
   buildColumnPath(index * 100),

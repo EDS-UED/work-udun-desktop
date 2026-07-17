@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { publicAsset } from '@/utils/publicAsset';
 import styles from './SiteFooter.module.css';
 
 const { t } = useI18n();
+const faviconSrc = publicAsset('/favicon.svg');
 
 const columns = computed(() => [
   {
@@ -59,7 +61,7 @@ const socialLinks = [
 
       <section :class="styles.identity">
         <RouterLink to="/" :class="styles.brand">
-          <img :class="styles.brandLogo" src="/favicon.svg" alt="" />
+          <img :class="styles.brandLogo" :src="faviconSrc" alt="" />
           UDun
         </RouterLink>
         <p>{{ t('footer.description') }}</p>

@@ -3,7 +3,13 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { EgIcon } from '@evergreen/components';
 import { useI18n } from 'vue-i18n';
 import { storeLocale, type AppLocale } from '@/i18n/locale';
+import { publicAsset } from '@/utils/publicAsset';
 import styles from './SiteHeader.module.css';
+
+const logoSrc = publicAsset('/udun-logo.svg');
+const chevronDownSrc = publicAsset('/eds-arrow-down-ios.svg');
+const chevronUpSrc = publicAsset('/eds-arrow-up-ios.svg');
+const localeIconSrc = publicAsset('/eds-website.svg');
 
 type LiquidGlassSurface = {
   updateMap: () => void;
@@ -163,7 +169,7 @@ onBeforeUnmount(() => {
   >
     <div ref="bar" :class="styles.bar" data-no-corner-smoothing>
       <RouterLink to="/" :class="styles.brand" aria-label="UDun home">
-        <img :class="styles.brandLogo" src="/udun-logo.svg" alt="" />
+        <img :class="styles.brandLogo" :src="logoSrc" alt="" />
       </RouterLink>
 
       <nav :class="styles.nav" aria-label="Primary">
@@ -191,12 +197,12 @@ onBeforeUnmount(() => {
             <span :class="[styles.chevron, productsOpen && styles.chevronOpen]">
               <img
                 :class="[styles.chevronIcon, styles.chevronIconDown]"
-                src="/eds-arrow-down-ios.svg"
+                :src="chevronDownSrc"
                 alt=""
               />
               <img
                 :class="[styles.chevronIcon, styles.chevronIconUp]"
-                src="/eds-arrow-up-ios.svg"
+                :src="chevronUpSrc"
                 alt=""
               />
             </span>
@@ -257,7 +263,7 @@ onBeforeUnmount(() => {
             :aria-haspopup="true"
             :aria-label="t('common.language')"
           >
-            <img :class="styles.localeIcon" src="/eds-website.svg" alt="" />
+            <img :class="styles.localeIcon" :src="localeIconSrc" alt="" />
           </button>
           <div
             :class="[styles.dropdownMenu, styles.localeMenu, localeOpen && styles.dropdownMenuOpen]"
