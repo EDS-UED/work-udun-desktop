@@ -12,13 +12,17 @@ node_modules
 .pnpm-store
 
 # Build / Nuxt
-dist
+/dist
 dist-ssr
 .nuxt
 .output
 .data
 .nitro
 .cache
+
+# Keep vendored package builds for CI / GitHub Pages
+!vendor/**/dist/
+!vendor/**/dist/**
 
 # Env / local
 *.local

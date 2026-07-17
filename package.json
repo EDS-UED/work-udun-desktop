@@ -5,9 +5,7 @@
   "description": "Udun official website — built on EverGreen Design System (Website)",
   "type": "module",
   "scripts": {
-    "predev": "pnpm --dir ../evergreen-design-system-website build",
     "dev": "nuxt dev --no-fork --port 5177",
-    "prebuild": "pnpm --dir ../evergreen-design-system-website build",
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -17,8 +15,8 @@
   "dependencies": {
     "@amcharts/amcharts5": "^5.19.1",
     "@amcharts/amcharts5-geodata": "^5.1.5",
-    "@evergreen/components": "link:../evergreen-design-system-website/packages/components",
-    "@evergreen/tokens": "link:../evergreen-design-system-website/packages/tokens",
+    "@evergreen/components": "file:./vendor/evergreen-components",
+    "@evergreen/tokens": "file:./vendor/evergreen-tokens",
     "nuxt": "^4.4.8",
     "vue": "^3.5.13",
     "vue-i18n": "^11.1.2"

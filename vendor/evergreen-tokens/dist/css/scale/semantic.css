@@ -1,0 +1,72 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Scale System — semantic mappings (语义尺度 → 基数).
+ * Source: spec/scale/semantic.json
+ */
+
+:root {
+
+  /* 间距（Spacing） */
+  --spacing-0: var(--scale-0);
+  --spacing-05: var(--scale-05);
+  --spacing-1: var(--scale-1);
+  --spacing-1-5: var(--scale-1-5);
+  --spacing-2: var(--scale-2);
+  --spacing-2-5: var(--scale-2-5); /* 20px */
+  --spacing-3: var(--scale-3);
+  --spacing-4: var(--scale-4);
+  --spacing-5: var(--scale-5);
+  --spacing-6: var(--scale-6);
+  --spacing-7: var(--scale-7);
+  --spacing-8: var(--scale-8);
+  --spacing-9: var(--scale-9);
+  --spacing-10: var(--scale-10);
+  --spacing-12: var(--scale-12);
+  --spacing-14: var(--scale-14);
+  --spacing-16: var(--scale-16);
+  --spacing-18: var(--scale-18);
+  --spacing-20: var(--scale-20);
+  --spacing-30: var(--scale-30);
+  --spacing-40: var(--scale-40);
+  --spacing-50: var(--scale-50);
+
+  /* 圆角（Radius） */
+  --radius-0: var(--scale-0);
+  --radius-sm: var(--scale-1);    /* 8px */
+  --radius-md: var(--scale-2);    /* 16px */
+  --radius-lg: var(--scale-3);    /* 24px */
+  --radius-full: var(--scale-full); /* 888px */
+
+  /* 平滑圆角（Corner Smoothing）— Figma/iOS squircle，0–1 对应 0%–100% */
+  --corner-smoothing: 0.6;        /* 60% — iOS 风格平滑圆角 */
+
+  /* 模糊（Blur） */
+  --blur-subtle: var(--scale-2);  /* 16px */
+  --blur-shallow: var(--scale-6); /* 48px */
+  --blur-deep: var(--scale-10);   /* 80px */
+
+  /* 层级（Depth / Elevation） */
+  --depth-subtle: var(--scale-05); /* 4px */
+  --depth-shallow: var(--scale-1); /* 8px */
+  --depth-deep: var(--scale-3);   /* 24px */
+
+  /* 图标尺寸（Icon Size） */
+  --icon-sm: var(--scale-1-5);    /* 12px */
+  --icon-md: var(--scale-2);      /* 16px */
+  --icon-lg: var(--scale-2-5);    /* 20px */
+  --icon-xl: var(--scale-3);      /* 24px */
+
+  /* 控件按钮（Control Button） */
+  --control-button-xs: var(--scale-4); /* 32px */
+  --control-button-sm: var(--scale-5); /* 40px */
+  --control-button-md: var(--scale-6); /* 48px */
+  --control-button-lg: var(--scale-7); /* 56px */
+  --control-button-xl: var(--scale-7-5); /* 60px */
+
+  /* 控件图标容器（Control Icon） */
+  --control-icon-xs: var(--scale-4-5); /* 36px */
+  --control-icon-sm: var(--scale-5); /* 40px */
+  --control-icon-md: var(--scale-6); /* 48px */
+  --control-icon-lg: var(--scale-6-5); /* 52px */
+  --control-icon-xl: var(--scale-7); /* 56px */
+}

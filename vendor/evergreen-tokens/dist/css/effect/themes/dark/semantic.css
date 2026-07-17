@@ -1,0 +1,266 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Effect System — semantic classes (dark).
+ * Source: spec/effect/semantic.json, spec/effect/base.json (shadow stacks)
+ */
+
+/* ========================================
+   组合应用（Composite Applications）
+   ======================================== */
+
+/* Flotation Box（Menu） */
+[data-theme="dark"] .effect-flotation-box {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: max-content;
+  padding: var(--spacing-1);
+  border-radius: var(--scale-3);
+  /* Menu Box BG：__fill → __shadow-glow(Plus darker) → __glass → __glass-shadow(Plus lighter) */
+  /* initLiquidGlass() 绑定 __glass */
+}
+
+[data-theme="dark"] .effect-flotation-box__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: visible;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-flotation-box__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(0deg, var(--material-same-white-quaternary) 0%, var(--material-same-white-quaternary) 100%), var(--effect-flotation-box);
+  background-blend-mode: normal, luminosity;
+  box-shadow: var(--effect-shadow-light);
+}
+
+[data-theme="dark"] .effect-flotation-box__shadow-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-shadow-light-glow);
+  mix-blend-mode: plus-darker;
+  -webkit-mix-blend-mode: plus-darker;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-flotation-box__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--effect-glass-box-liquid-tint);
+  backdrop-filter: var(--effect-glass-box-liquid-fallback);
+  -webkit-backdrop-filter: var(--effect-glass-box-liquid-fallback);
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-flotation-box__glass-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-glass-box);
+  mix-blend-mode: plus-lighter;
+  -webkit-mix-blend-mode: plus-lighter;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-flotation-box__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+/* Popup Box */
+[data-theme="dark"] .effect-popup-box {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: max-content;
+  padding: var(--spacing-1);
+  border-radius: var(--scale-4);
+  /* 同 Menu 结构，圆角 scale-4 */
+  /* initLiquidGlass() 绑定 __glass */
+}
+
+[data-theme="dark"] .effect-popup-box__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  overflow: visible;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-popup-box__fill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(0deg, var(--box-flotation) 0%, var(--box-flotation) 100%), var(--effect-flotation-box);
+  background-blend-mode: normal, luminosity;
+  box-shadow: var(--effect-shadow-light);
+}
+
+[data-theme="dark"] .effect-popup-box__shadow-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-shadow-light-glow);
+  mix-blend-mode: plus-darker;
+  -webkit-mix-blend-mode: plus-darker;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-popup-box__glass {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--effect-glass-box-liquid-tint);
+  backdrop-filter: var(--effect-glass-box-liquid-fallback);
+  -webkit-backdrop-filter: var(--effect-glass-box-liquid-fallback);
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-popup-box__glass-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-glass-box);
+  mix-blend-mode: plus-lighter;
+  -webkit-mix-blend-mode: plus-lighter;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-popup-box__content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+}
+
+/* Subtle Card */
+[data-theme="dark"] .effect-subtle-card {
+  border-radius: var(--scale-3);
+  border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+  background: var(--box-page);
+  box-shadow: var(--effect-shadow-subtle);
+  /* 组成：Fill + Border + Shadow */
+}
+
+/* ========================================
+   Molde Card
+   ======================================== */
+
+/* Molde Level */
+[data-theme="dark"] .effect-molde-level {
+  box-shadow: var(--effect-shadow-molde);
+  /* 组成：Shadow */
+  /* 用于模块左弱阴影 */
+}
+
+/* ========================================
+   拓展类（后续可添加类）
+   ======================================== */
+
+/* Add Item */
+[data-theme="dark"] .add-item {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  /* 拓展类：添加项 */
+}
+
+/* ========================================
+   Shadow Stack Utilities
+   ======================================== */
+
+/* Deep Shadows（系统级）—— Modal / Dialog — layers 1–3 plus-darker, layer 4+ Normal */
+[data-theme="dark"] .effect-shadow-deep-stack {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  box-shadow: var(--effect-shadow-deep);
+}
+
+[data-theme="dark"] .effect-shadow-deep-stack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-shadow-deep-glow);
+  mix-blend-mode: plus-darker;
+  -webkit-mix-blend-mode: plus-darker;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-shadow-deep-stack > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light Shadows（业务级）—— Card / Panel — layers 1–3 plus-darker, layer 4+ Normal */
+[data-theme="dark"] .effect-shadow-light-stack {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+  box-shadow: var(--effect-shadow-light);
+}
+
+[data-theme="dark"] .effect-shadow-light-stack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  box-shadow: var(--effect-shadow-light-glow);
+  mix-blend-mode: plus-darker;
+  -webkit-mix-blend-mode: plus-darker;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-shadow-light-stack > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========================================
+   Glass Stack Utilities
+   ======================================== */
+
+/* Glass Box（浮层容器）—— Modal / Dropdown / Popover — 3 layers, all plus-lighter */
+[data-theme="dark"] .effect-glass-box-stack {
+  position: relative;
+  isolation: isolate;
+  overflow: visible;
+}
+
+[data-theme="dark"] .effect-glass-box-stack::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  box-shadow: var(--effect-glass-box-glow);
+  mix-blend-mode: plus-darker;
+  -webkit-mix-blend-mode: plus-darker;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .effect-glass-box-stack > * {
+  position: relative;
+  z-index: 2;
+}

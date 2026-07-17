@@ -1,0 +1,136 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Color System — semantic colors referencing base (light).
+ * Source: spec/color/semantic.json
+ * Figma: node 2536:5814 (Variable Name column)
+ * Mapped with color-mix(in display-p3) referencing var(--eds-*).
+ */
+
+:root, [data-theme="light"] {
+
+  /* Box（容器 / 背景） */
+  --box-container: color-mix(in display-p3, var(--eds-container) 60%, transparent);
+  --box-menu: var(--eds-menu);
+  --box-page: var(--eds-face);
+  --box-flotation: var(--eds-flotation);
+
+  /* Event（交互状态） */
+  --event-hover: color-mix(in display-p3, var(--eds-base) 5%, transparent);
+  --event-hover-brand: var(--eds-brand);
+  --event-hover-danger: var(--eds-danger);
+  --event-hover-base: var(--eds-base);
+  --event-hover-face: var(--eds-face);
+  --event-hover-same-black: var(--eds-same-black);
+  --event-hover-same-white: var(--eds-same-white);
+  --event-active-brand: color-mix(in display-p3, var(--eds-brand) 60%, transparent);
+  --event-active-danger: color-mix(in display-p3, var(--eds-danger) 60%, transparent);
+  --event-active-base: color-mix(in display-p3, var(--eds-base) 60%, transparent);
+  --event-active-face: color-mix(in display-p3, var(--eds-face) 60%, transparent);
+  --event-active-same-black: color-mix(in display-p3, var(--eds-same-black) 60%, transparent);
+  --event-active-same-white: color-mix(in display-p3, var(--eds-same-white) 60%, transparent);
+  --event-focus: color-mix(in display-p3, var(--eds-base) 7%, transparent);
+  --event-focus-brand: var(--eds-brand);
+  --event-disable-base: color-mix(in display-p3, var(--eds-base) 20%, transparent);
+  --event-disable-base-waken: color-mix(in display-p3, var(--eds-base) 5%, transparent);
+
+  /* Stroke（描边 / 分割线） */
+  --stroke-hide: transparent;
+  --stroke-base-primary: var(--eds-base);
+  --stroke-base-secondary: color-mix(in display-p3, var(--eds-base) 60%, transparent);
+  --stroke-base-tertiary: color-mix(in display-p3, var(--eds-base) 40%, transparent);
+  --stroke-base-quaternary: color-mix(in display-p3, var(--eds-base) 20%, transparent);
+  --stroke-face-primary: var(--eds-face);
+  --stroke-face-secondary: color-mix(in display-p3, var(--eds-face) 60%, transparent);
+  --stroke-divider-module: var(--eds-module-stroke);
+  --stroke-divider-page: color-mix(in display-p3, var(--eds-base) 10%, transparent);
+  --stroke-divider-table: color-mix(in display-p3, var(--eds-base) 4%, transparent);
+  --stroke-outline-shallow: color-mix(in display-p3, var(--eds-base) 12%, transparent);
+  --stroke-outline-deep: color-mix(in display-p3, var(--eds-base) 18%, transparent);
+  --stroke-outline-subtle: color-mix(in display-p3, var(--eds-base) 6%, transparent);
+  --stroke-color-brand: var(--eds-brand);
+  --stroke-color-brand-active: color-mix(in display-p3, var(--eds-brand) 60%, transparent);
+  --stroke-color-table-hover: color-mix(in display-p3, var(--eds-brand) 40%, transparent);
+  --stroke-color-success: var(--eds-success);
+  --stroke-color-decor: var(--eds-decor);
+  --stroke-color-danger: var(--eds-danger);
+  --stroke-color-danger-active: color-mix(in display-p3, var(--eds-danger) 60%, transparent);
+  --stroke-same-white-primary: var(--eds-same-white);
+  --stroke-same-white-secondary: color-mix(in display-p3, var(--eds-same-white) 60%, transparent);
+  --stroke-same-black-primary: var(--eds-same-black);
+  --stroke-same-black-secondary: color-mix(in display-p3, var(--eds-same-black) 60%, transparent);
+
+  /* Text（文本色） */
+  --text-brand-primary: var(--eds-brand);
+  --text-brand-secondary: color-mix(in display-p3, var(--eds-brand) 60%, transparent);
+  --text-brand-tertiary: color-mix(in display-p3, var(--eds-brand) 40%, transparent);
+  --text-brand-quaternary: color-mix(in display-p3, var(--eds-brand) 20%, transparent);
+  --text-match: var(--eds-match);
+  --text-success: var(--eds-success);
+  --text-danger-primary: var(--eds-danger);
+  --text-danger-secondary: color-mix(in display-p3, var(--eds-danger) 60%, transparent);
+  --text-warning: var(--eds-warning);
+  --text-same-black-primary: var(--eds-same-black);
+  --text-same-black-secondary: color-mix(in display-p3, var(--eds-same-black) 60%, transparent);
+  --text-same-white-primary: var(--eds-same-white);
+  --text-same-white-secondary: color-mix(in display-p3, var(--eds-same-white) 60%, transparent);
+  --text-base-primary: var(--eds-base);
+  --text-base-secondary: color-mix(in display-p3, var(--eds-base) 60%, transparent);
+  --text-base-tertiary: color-mix(in display-p3, var(--eds-base) 40%, transparent);
+  --text-base-quaternary: color-mix(in display-p3, var(--eds-base) 20%, transparent);
+  --text-face-primary: var(--eds-face);
+  --text-face-secondary: color-mix(in display-p3, var(--eds-face) 60%, transparent);
+  --text-face-tertiary: color-mix(in display-p3, var(--eds-face) 40%, transparent);
+  --text-face-quaternary: color-mix(in display-p3, var(--eds-face) 20%, transparent);
+
+  /* Material（材质 / 填充） */
+  --material-hide: transparent;
+  --material-brand-primary: var(--eds-brand);
+  --material-brand-tertiary: color-mix(in display-p3, var(--eds-brand) 40%, transparent);
+  --material-brand-quaternary: color-mix(in display-p3, var(--eds-brand) 20%, transparent);
+  --material-brand-quinary: color-mix(in display-p3, var(--eds-brand) 10%, transparent);
+  --material-match-primary: var(--eds-match);
+  --material-match-quaternary: color-mix(in display-p3, var(--eds-match) 20%, transparent);
+  --material-decor-primary: var(--eds-decor);
+  --material-decor-quaternary: color-mix(in display-p3, var(--eds-decor) 20%, transparent);
+  --material-success-primary: var(--eds-success);
+  --material-success-quaternary: color-mix(in display-p3, var(--eds-success) 20%, transparent);
+  --material-danger-primary: var(--eds-danger);
+  --material-danger-quaternary: color-mix(in display-p3, var(--eds-danger) 20%, transparent);
+  --material-warning-primary: var(--eds-warning);
+  --material-warning-quaternary: color-mix(in display-p3, var(--eds-warning) 20%, transparent);
+  --material-same-black: var(--eds-same-black);
+  --material-same-white-primary: var(--eds-same-white);
+  --material-same-white-secondary: color-mix(in display-p3, var(--eds-same-white) 60%, transparent);
+  --material-same-white-tertiary: color-mix(in display-p3, var(--eds-same-white) 80%, transparent);
+  --material-same-white-quaternary: color-mix(in display-p3, var(--eds-same-white) 10%, transparent);
+  --material-card-shallow: color-mix(in display-p3, var(--eds-base) 2%, transparent);
+  --material-card-moderate: color-mix(in display-p3, var(--eds-base) 5%, transparent);
+  --material-card-subtle: color-mix(in display-p3, var(--eds-base) 4%, transparent);
+  --material-card-deep: color-mix(in display-p3, var(--eds-base) 10%, transparent);
+  --material-base-primary: var(--eds-base);
+  --material-base-secondary: color-mix(in display-p3, var(--eds-base) 60%, transparent);
+  --material-base-tertiary: color-mix(in display-p3, var(--eds-base) 40%, transparent);
+  --material-base-quaternary: color-mix(in display-p3, var(--eds-base) 20%, transparent);
+  --material-face-primary: var(--eds-face);
+  --material-face-secondary: color-mix(in display-p3, var(--eds-face) 60%, transparent);
+  --material-face-tertiary: color-mix(in display-p3, var(--eds-face) 40%, transparent);
+  --material-face-quaternary: color-mix(in display-p3, var(--eds-face) 20%, transparent);
+
+  /* Data Table（表格） */
+  --data-table-head: color-mix(in display-p3, var(--eds-data-table) 90%, transparent);
+  --data-table-scroll-bar-background: color-mix(in display-p3, var(--eds-data-table) 90%, transparent);
+  --data-table-scroll-bar-indicator: color-mix(in display-p3, var(--eds-base) 4%, transparent);
+  --data-table-scroll-bar-indicator-hover: color-mix(in display-p3, var(--eds-base) 20%, transparent);
+
+  /* Effect（特效色） */
+  --effect-vulvar-shadow: color-mix(in display-p3, var(--eds-same-black) 20%, transparent);
+  --effect-vulvar-shadow-subtle: color-mix(in display-p3, var(--eds-same-black) 3%, transparent);
+  --effect-vulvar-shadow-glow: var(--eds-vulvar-glow);
+  --effect-inner-shadow: var(--eds-same-black);
+  --effect-inner-shadow-glow: var(--eds-inner-glow);
+  --effect-popup-background: color-mix(in display-p3, var(--eds-same-black) 50%, transparent);
+  --effect-popup-box: var(--eds-popup);
+  --effect-flotation-box: color-mix(in display-p3, var(--eds-flotation) 60%, transparent);
+  --effect-mask: color-mix(in display-p3, var(--eds-page) 60%, transparent);
+  --effect-prompt: color-mix(in display-p3, var(--eds-base) 90%, transparent);
+}

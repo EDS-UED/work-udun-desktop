@@ -1,0 +1,8 @@
+/**
+ * Effect System entry (all themes)
+ * Do not edit directly, this file was auto-generated.
+ */
+
+@import './themes/light.css';
+@import './themes/dark.css';
+@import './ready.css';

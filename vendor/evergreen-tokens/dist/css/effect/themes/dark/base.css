@@ -1,0 +1,169 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Effect System — base tokens (dark).
+ * Source: spec/effect/base.json, spec/effect/liquid-glass.json
+ * Color primitives reference var(--eds-*) from the matching color theme.
+ */
+
+[data-theme="dark"] {
+
+  /* ========================================
+     阴影系统（Shadow System）
+     ======================================== */
+
+  /* Deep Shadows（系统级）—— Modal / Dialog */
+  /* Figma 共 5 层：第 1–3 层 plus-darker（::after + mix-blend-mode） */
+  /* 第 4 层起：Normal */
+  --effect-shadow-deep-glow: 
+    1.25px 0 0 -0.75px var(--effect-vulvar-shadow-glow),
+    -1.25px 0 0 -0.75px var(--effect-vulvar-shadow-glow),
+    0 0 0 0.5px var(--effect-vulvar-shadow-glow);
+  --effect-shadow-deep-glow-blend-mode: plus-darker;
+  --effect-shadow-deep: 
+    0 var(--scale-6) var(--scale-20) 0 var(--effect-vulvar-shadow),
+    0 0 0 0.5px var(--effect-inner-shadow-glow) inset;
+  /* 容器使用，该特效不用于业务。使用该特效时：
+     * 1、正确：添加背景色
+     * 2、正确：添加圆角
+     * 3、错误：添加边框
+     * 4、可调节参数：圆角、阴影颜色、阴影大小、阴影模糊度、阴影偏移量
+     */
+
+  /* Light Shadows（业务级）—— Card / Panel */
+  /* Figma 共 4 层：第 1–3 层 plus-darker（::after + mix-blend-mode） */
+  /* 第 4 层起：Normal */
+  --effect-shadow-light-glow: 
+    1.25px 0 0 -0.75px var(--effect-vulvar-shadow-glow),
+    -1.25px 0 0 -0.75px var(--effect-vulvar-shadow-glow),
+    0 0 0 0.5px var(--effect-vulvar-shadow-glow);
+  --effect-shadow-light-glow-blend-mode: plus-darker;
+  --effect-shadow-light: 0 var(--scale-2) var(--scale-12) 0 var(--effect-vulvar-shadow);
+  /* Figma Light Shadow 共 4 层投影：
+     * 第 1–3 层（±1.25px 边缘 + 0.5px spread）→ --effect-shadow-light-glow，Plus darker
+     * 第 4 层（drop shadow）→ --effect-shadow-light，Normal
+     * CSS 无法为单层 box-shadow 指定混合模式，需 ::after + mix-blend-mode 渲染 glow 层
+     * 1、正确：添加背景色
+     * 2、正确：添加圆角
+     * 3、错误：添加边框
+     * 4、可调节参数：圆角
+     */
+
+  /* Subtle Shadows（结构级）—— List / Table Row */
+  --effect-shadow-subtle: 0 var(--scale-1-5) var(--scale-4) 0 var(--effect-vulvar-shadow-subtle);
+  /* 极浅阴影，视觉弱化，用于模块、大卡片等。使用该特效时：
+     * 1、正确：添加背景色
+     * 2、正确：添加圆角
+     * 3、正确：添加边框，唯一绑定 border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+     * 4、可调节参数：圆角
+     */
+
+  /* Molde Shadows（模块层级）—— Module */
+  --effect-shadow-molde: -2px 0 var(--scale-4) 0 var(--effect-vulvar-shadow-subtle);
+  /* 用于模块左弱阴影。使用该特效时：
+     * 1、直接添加
+     */
+
+
+  /* ========================================
+     玻璃材质系统（Glass System）
+     ======================================== */
+
+  /* Glass Box（浮层容器）—— Modal / Dropdown / Popover */
+  /* Figma 共 3 层：全部 plus-lighter（::before + mix-blend-mode） */
+  --effect-glass-box-glow: 
+    0 40px 10px -40px var(--effect-inner-shadow) inset,
+    0 -40px 10px -40px var(--effect-inner-shadow) inset,
+    0 0 0 0.5px var(--effect-inner-shadow-glow) inset;
+  --effect-glass-box-glow-blend-mode: plus-lighter;
+  --effect-glass-box: var(--effect-glass-box-glow);
+  /* Figma Glass Box 共 3 层内阴影，全部 Plus lighter（--effect-glass-box-glow）
+     * Figma Glass 层液态参数见 --effect-glass-box-liquid-*（initLiquidGlass）
+     * CSS 需 ::before + mix-blend-mode 渲染内阴影
+     * Box 玻璃，与 Light Shadows 叠层使用。使用该特效时：
+     * 1、正确：独立的玻璃层
+     * 2、正确：与阴影绑定
+     * 3、错误：单独使用
+     * 4、可调节参数：圆角
+     */
+
+  /* Glass BG（组件表面）—— Card / Button / Input */
+  /* 使用液态玻璃实现
+     * 参考：https://github.com/shuding/liquid-glass（MIT © Shu Ding）
+     * ① Canvas 按 rounded-rect SDF 生成 displacement map（按元素尺寸动态计算）
+     * ② 注入 SVG <filter>：feImage + feDisplacementMap（x→R, y→G）
+     * ③ backdrop-filter: url(#filter) blur() contrast() brightness() saturate()
+     * ④ CSS 变量：dist/css/effect/themes/light|dark/base.css → --effect-glass-bg-* / --effect-glass-bg-surface
+     * ⑤ JS 入口：import { initLiquidGlass } from '@evergreen/tokens/liquid-glass'
+     * ⑥ 语义类：.effect-flotation-box / .effect-popup-box（init 前 fallback → --effect-glass-box-liquid-fallback）
+     * ⑦ 用于 Card / Button / Input 表面；不与 shadow 层级混用
+     */
+  /* 实现细节见 spec/effect/liquid-glass.json 与 src/liquid-glass.js
+     * Box 玻璃，与 Light Shadows 叠层使用。使用该特效时：
+     * 1、正确：独立的玻璃层
+     * 2、正确：与阴影绑定
+     * 3、错误：单独使用
+     * 4、可调节参数：圆角
+     */
+
+
+  /* ========================================
+     背景模糊系统（Blur System）
+     ======================================== */
+
+  /* Blurred BG —— 背景模糊 / 滚动遮罩 */
+  --effect-blur-bg: saturate(360%) blur(50px);
+  /* 用于背景模糊与滚动遮罩层 */
+
+
+  /* Liquid Glass — https://github.com/shuding/liquid-glass (MIT) */
+  /* Glass BG — Card / Button / Input */
+  --effect-glass-bg-blur: 0.25px;
+  --effect-glass-bg-contrast: 1.2;
+  --effect-glass-bg-brightness: 1.05;
+  --effect-glass-bg-saturate: 1.1;
+  --effect-glass-bg-shader-edge-start: 0.8;
+  --effect-glass-bg-shader-edge-end: 0;
+  --effect-glass-bg-shader-edge-offset: 0.15;
+  --effect-glass-bg-shader-rect-inset-x: 0.2;
+  --effect-glass-bg-shader-rect-inset-y: 0.15;
+  --effect-glass-bg-shader-corner-radius: 0.6;
+  --effect-glass-bg-shader-interior-refraction: 6;
+  --effect-glass-bg-shader-interior-frequency-x: 1.2;
+  --effect-glass-bg-shader-interior-frequency-y: 0.8;
+  --effect-glass-bg-refraction-scale: 0.5;
+  --effect-glass-bg-surface: color-mix(in display-p3, var(--eds-face) 72%, transparent);
+  --effect-glass-bg-fallback: blur(12px) saturate(180%);
+  --effect-glass-bg-fallback-surface: color-mix(in display-p3, var(--eds-face) 85%, transparent);
+  --effect-glass-bg: blur(var(--effect-glass-bg-blur)) contrast(var(--effect-glass-bg-contrast)) brightness(var(--effect-glass-bg-brightness)) saturate(var(--effect-glass-bg-saturate));
+
+  /* Glass Box — Flotation / Popup（Figma Glass 层） */
+  /* Figma Glass: angle 0° intensity 20 refraction 70 depth 40 frost 25 splay 20 */
+  /* lightIntensity 20 → brightness 1 + 20/100×0.25
+     * refraction 70 → contrast 1 + 70/100×0.3；refractionScale 0.7
+     * depth 40 → edgeOffset / rectInset
+     * frost 25 → blur 0.25px；fallback blur(10px)
+     * splay 20 → edgeStart 1 − 20/100
+     * interiorRefraction 6px → 中间区域低频折射位移
+     * dispersion 40 → 暂未映射（需 chromatic feOffset）
+     */
+  --effect-glass-box-liquid-blur: 0.25px;
+  --effect-glass-box-liquid-contrast: 1.21;
+  --effect-glass-box-liquid-brightness: 1.05;
+  --effect-glass-box-liquid-saturate: 1.125;
+  --effect-glass-box-liquid-shader-edge-start: 0.8;
+  --effect-glass-box-liquid-shader-edge-end: 0;
+  --effect-glass-box-liquid-shader-edge-offset: 0.11;
+  --effect-glass-box-liquid-shader-rect-inset-x: 0.18;
+  --effect-glass-box-liquid-shader-rect-inset-y: 0.15;
+  --effect-glass-box-liquid-shader-corner-radius: 0.6;
+  --effect-glass-box-liquid-shader-interior-refraction: 6;
+  --effect-glass-box-liquid-shader-interior-frequency-x: 1.2;
+  --effect-glass-box-liquid-shader-interior-frequency-y: 0.8;
+  --effect-glass-box-liquid-refraction-scale: 0.7;
+  --effect-glass-box-liquid-surface: color-mix(in display-p3, var(--eds-face) 72%, transparent);
+  --effect-glass-box-liquid-tint: color(display-p3 0 0 0 / 0.004);
+  --effect-glass-box-liquid-fallback: blur(10px) saturate(160%);
+  --effect-glass-box-liquid-fallback-surface: color-mix(in display-p3, var(--eds-face) 85%, transparent);
+  --effect-glass-box-liquid: blur(var(--effect-glass-box-liquid-blur)) contrast(var(--effect-glass-box-liquid-contrast)) brightness(var(--effect-glass-box-liquid-brightness)) saturate(var(--effect-glass-box-liquid-saturate));
+
+}

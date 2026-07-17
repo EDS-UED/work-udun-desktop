@@ -1,0 +1,60 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Typography System — base primitives (原始字体排印令牌).
+ * Source: spec/typography/base.json
+ */
+
+:root {
+
+  /* ---- 原始字体排印令牌（Primitive Tokens） ---- */
+  /* 字号 */
+  --size-display-large: 88px;
+  --size-display-medium: 80px;
+  --size-display-small: 72px;
+  --size-headline-large: 64px;
+  --size-headline-medium: 56px;
+  --size-headline-small: 48px;
+  --size-title-large: 40px;
+  --size-title-medium: 32px;
+  --size-title-small: 24px;
+  --size-body-large: 20px;
+  --size-body-large-strong: 20px;
+  --size-body-medium: 18px;
+  --size-body-medium-strong: 18px;
+  --size-body-small: 16px;
+  --size-body-small-strong: 16px;
+  --size-footnote-large: 14px;
+  --size-footnote-large-strong: 14px;
+  --size-footnote-medium: 12px;
+  --size-footnote-medium-strong: 12px;
+
+  /* 行高 */
+  --line-height-display-large: 96px;
+  --line-height-display-medium: 88px;
+  --line-height-display-small: 80px;
+  --line-height-headline-large: 72px;
+  --line-height-headline-medium: 64px;
+  --line-height-headline-small: 56px;
+  --line-height-title-large: 48px;
+  --line-height-title-medium: 40px;
+  --line-height-title-small: 32px;
+  --line-height-body-large: 28px;
+  --line-height-body-large-strong: 28px;
+  --line-height-body-medium: 26px;
+  --line-height-body-medium-strong: 26px;
+  --line-height-body-small: 24px;
+  --line-height-body-small-strong: 24px;
+  --line-height-footnote-large: 20px;
+  --line-height-footnote-large-strong: 20px;
+  --line-height-footnote-medium: 16px;
+  --line-height-footnote-medium-strong: 16px;
+
+  /* 字重 */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-bold: 700;
+
+  /* 字体家族 */
+  --font-family-text: "EDS Text", "PingFang SC", "SourceHanSansSC", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+
+}

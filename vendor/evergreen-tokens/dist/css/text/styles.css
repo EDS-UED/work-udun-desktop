@@ -1,0 +1,144 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Text System — semantic role classes (文本样式 → typography).
+ * Source: spec/text/styles.json
+ * Class names match Figma Text Styles.
+ */
+
+/* ========================================
+   语义角色类
+   名称与 Figma Text Styles 完全一致
+   ======================================== */
+
+/* Display/Large */
+.typography-display-large {
+  font-size: var(--typography-display-large-size);
+  font-weight: var(--typography-display-large-weight);
+  line-height: var(--typography-display-large-line-height);
+}
+
+/* Display/Medium */
+.typography-display-medium {
+  font-size: var(--typography-display-medium-size);
+  font-weight: var(--typography-display-medium-weight);
+  line-height: var(--typography-display-medium-line-height);
+}
+
+/* Display/Small */
+.typography-display-small {
+  font-size: var(--typography-display-small-size);
+  font-weight: var(--typography-display-small-weight);
+  line-height: var(--typography-display-small-line-height);
+}
+
+/* Headline/Large */
+.typography-headline-large {
+  font-size: var(--typography-headline-large-size);
+  font-weight: var(--typography-headline-large-weight);
+  line-height: var(--typography-headline-large-line-height);
+}
+
+/* Headline/Medium */
+.typography-headline-medium {
+  font-size: var(--typography-headline-medium-size);
+  font-weight: var(--typography-headline-medium-weight);
+  line-height: var(--typography-headline-medium-line-height);
+}
+
+/* Headline/Small */
+.typography-headline-small {
+  font-size: var(--typography-headline-small-size);
+  font-weight: var(--typography-headline-small-weight);
+  line-height: var(--typography-headline-small-line-height);
+}
+
+/* Title/Large */
+.typography-title-large {
+  font-size: var(--typography-title-large-size);
+  font-weight: var(--typography-title-large-weight);
+  line-height: var(--typography-title-large-line-height);
+}
+
+/* Title/Medium */
+.typography-title-medium {
+  font-size: var(--typography-title-medium-size);
+  font-weight: var(--typography-title-medium-weight);
+  line-height: var(--typography-title-medium-line-height);
+}
+
+/* Title/Small */
+.typography-title-small {
+  font-size: var(--typography-title-small-size);
+  font-weight: var(--typography-title-small-weight);
+  line-height: var(--typography-title-small-line-height);
+}
+
+/* Body/Large */
+.typography-body-large {
+  font-size: var(--typography-body-large-size);
+  font-weight: var(--typography-body-large-weight);
+  line-height: var(--typography-body-large-line-height);
+}
+
+/* Body/Large Strong */
+.typography-body-large-strong {
+  font-size: var(--typography-body-large-strong-size);
+  font-weight: var(--typography-body-large-strong-weight);
+  line-height: var(--typography-body-large-strong-line-height);
+}
+
+/* Body/Medium */
+.typography-body-medium {
+  font-size: var(--typography-body-medium-size);
+  font-weight: var(--typography-body-medium-weight);
+  line-height: var(--typography-body-medium-line-height);
+}
+
+/* Body/Medium Strong */
+.typography-body-medium-strong {
+  font-size: var(--typography-body-medium-strong-size);
+  font-weight: var(--typography-body-medium-strong-weight);
+  line-height: var(--typography-body-medium-strong-line-height);
+}
+
+/* Body/Small */
+.typography-body-small {
+  font-size: var(--typography-body-small-size);
+  font-weight: var(--typography-body-small-weight);
+  line-height: var(--typography-body-small-line-height);
+}
+
+/* Body/Small Strong */
+.typography-body-small-strong {
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+}
+
+/* Footnote/Large */
+.typography-footnote-large {
+  font-size: var(--typography-footnote-large-size);
+  font-weight: var(--typography-footnote-large-weight);
+  line-height: var(--typography-footnote-large-line-height);
+}
+
+/* Footnote/Large Strong */
+.typography-footnote-large-strong {
+  font-size: var(--typography-footnote-large-strong-size);
+  font-weight: var(--typography-footnote-large-strong-weight);
+  line-height: var(--typography-footnote-large-strong-line-height);
+}
+
+/* Footnote/Medium */
+.typography-footnote-medium {
+  font-size: var(--typography-footnote-medium-size);
+  font-weight: var(--typography-footnote-medium-weight);
+  line-height: var(--typography-footnote-medium-line-height);
+}
+
+/* Footnote/Medium Strong */
+.typography-footnote-medium-strong {
+  font-size: var(--typography-footnote-medium-strong-size);
+  font-weight: var(--typography-footnote-medium-strong-weight);
+  line-height: var(--typography-footnote-medium-strong-line-height);
+}

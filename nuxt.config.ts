@@ -1,9 +1,9 @@
 import { resolve } from 'node:path';
 
 const projectRoot = resolve(__dirname);
-const websiteRepoRoot = resolve(projectRoot, '../evergreen-design-system-website');
-const tokensRoot = resolve(websiteRepoRoot, 'packages/tokens');
+const tokensRoot = resolve(projectRoot, 'vendor/evergreen-tokens');
 const isDevelopment = process.env.NODE_ENV !== 'production';
+const baseURL = process.env.NUXT_APP_BASE_URL || '/';
 
 export default defineNuxtConfig({
   srcDir: 'src/',
@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   css: ['~/styles/global.css'],
   compatibilityDate: '2026-07-17',
   app: {
+    baseURL,
     head: {
       htmlAttrs: {
         lang: 'zh-CN',
@@ -78,10 +79,10 @@ export default defineNuxtConfig({
     },
     server: {
       fs: {
-        allow: [projectRoot, websiteRepoRoot],
+        allow: [projectRoot],
       },
       watch: {
-        ignored: ['**/.git/**', '**/node_modules/**', '**/packages/tokens/dist/**'],
+        ignored: ['**/.git/**', '**/node_modules/**', '**/vendor/**/dist/**'],
       },
     },
   },

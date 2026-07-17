@@ -15,11 +15,11 @@ importers:
         specifier: ^5.1.5
         version: 5.1.5
       '@evergreen/components':
-        specifier: link:../evergreen-design-system-website/packages/components
-        version: link:../evergreen-design-system-website/packages/components
+        specifier: file:./vendor/evergreen-components
+        version: file:vendor/evergreen-components(vue@3.5.39(typescript@5.9.3))
       '@evergreen/tokens':
-        specifier: link:../evergreen-design-system-website/packages/tokens
-        version: link:../evergreen-design-system-website/packages/tokens
+        specifier: file:./vendor/evergreen-tokens
+        version: file:vendor/evergreen-tokens
       nuxt:
         specifier: ^4.4.8
         version: 4.4.8(@babel/plugin-syntax-jsx@7.29.7(@babel/core@7.29.7))(@babel/plugin-syntax-typescript@7.29.7(@babel/core@7.29.7))(@parcel/watcher@2.5.6)(@types/node@22.20.1)(@vue/compiler-sfc@3.5.39)(cac@6.7.14)(db0@0.3.4)(esbuild@0.28.1)(ioredis@5.11.1)(magicast@0.5.3)(rollup-plugin-visualizer@7.0.1(rollup@4.62.2))(rollup@4.62.2)(srvx@0.11.22)(terser@5.49.0)(typescript@5.9.3)(vite@7.3.6(@types/node@22.20.1)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))(vue-tsc@2.2.12(typescript@5.9.3))(yaml@2.9.0)
@@ -391,6 +391,14 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@evergreen/components@file:vendor/evergreen-components':
+    resolution: {directory: vendor/evergreen-components, type: directory}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@evergreen/tokens@file:vendor/evergreen-tokens':
+    resolution: {directory: vendor/evergreen-tokens, type: directory}
 
   '@intlify/core-base@11.4.6':
     resolution: {integrity: sha512-EOeHO95XESK9IFHgHeZXunsM/WBAoCA0DlaWODvx14vKmetAuS97t+l6Xe9hTUqntPpF93vtVSjjUDafw3wXMw==}
@@ -2227,6 +2235,9 @@ packages:
     peerDependenciesMeta:
       picomatch:
         optional: true
+
+  figma-squircle@1.1.0:
+    resolution: {integrity: sha512-3aa6bOurrsybsuYo1TMRuasBpXgVjgnmOUtZ40il6e1dJF2lhTRq89z7oy1uzKDspbH3630rLZD2UvJqXDiktA==}
 
   file-uri-to-path@1.0.0:
     resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
@@ -4135,6 +4146,14 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
+  '@evergreen/components@file:vendor/evergreen-components(vue@3.5.39(typescript@5.9.3))':
+    dependencies:
+      vue: 3.5.39(typescript@5.9.3)
+
+  '@evergreen/tokens@file:vendor/evergreen-tokens':
+    dependencies:
+      figma-squircle: 1.1.0
+
   '@intlify/core-base@11.4.6':
     dependencies:
       '@intlify/devtools-types': 11.4.6
@@ -6021,6 +6040,8 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.5):
     optionalDependencies:
       picomatch: 4.0.5
+
+  figma-squircle@1.1.0: {}
 
   file-uri-to-path@1.0.0: {}
 

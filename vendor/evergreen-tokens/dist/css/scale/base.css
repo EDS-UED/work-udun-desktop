@@ -1,0 +1,52 @@
+/**
+ * Do not edit directly, this file was auto-generated from Figma tokens.
+ * Scale System — base primitives (基数).
+ * Source: spec/scale/base.json
+ * Formula: scale(n) = n × var(--scale-base). Stroke is independent of the 4px grid.
+ */
+
+:root {
+
+  /* 原始尺度引擎（Primitive Scale Engine）
+     scale(n) = n × var(--scale-base)
+     离散映射：仅预定义以下值 */
+  --scale-base: 8px;
+  --scale-0: calc(0 * var(--scale-base)); /* 0 × 8px */
+  --scale-05: calc(0.5 * var(--scale-base)); /* 0.5 × 8px */
+  --scale-1: calc(1 * var(--scale-base)); /* 1 × 8px */
+  --scale-1-5: calc(1.5 * var(--scale-base)); /* 1.5 × 8px */
+  --scale-2: calc(2 * var(--scale-base)); /* 2 × 8px */
+  --scale-2-5: calc(2.5 * var(--scale-base)); /* 2.5 × 8px */
+  --scale-3: calc(3 * var(--scale-base)); /* 3 × 8px */
+  --scale-4: calc(4 * var(--scale-base)); /* 4 × 8px */
+  --scale-4-5: calc(4.5 * var(--scale-base)); /* 4.5 × 8px */
+  --scale-5: calc(5 * var(--scale-base)); /* 5 × 8px */
+  --scale-6: calc(6 * var(--scale-base)); /* 6 × 8px */
+  --scale-6-5: calc(6.5 * var(--scale-base)); /* 6.5 × 8px */
+  --scale-7: calc(7 * var(--scale-base)); /* 7 × 8px */
+  --scale-7-5: calc(7.5 * var(--scale-base)); /* 7.5 × 8px */
+  --scale-8: calc(8 * var(--scale-base)); /* 8 × 8px */
+  --scale-9: calc(9 * var(--scale-base)); /* 9 × 8px */
+  --scale-10: calc(10 * var(--scale-base)); /* 10 × 8px */
+  --scale-11: calc(11 * var(--scale-base)); /* 11 × 8px */
+  --scale-12: calc(12 * var(--scale-base)); /* 12 × 8px */
+  --scale-13: calc(13 * var(--scale-base)); /* 13 × 8px */
+  --scale-14: calc(14 * var(--scale-base)); /* 14 × 8px */
+  --scale-15: calc(15 * var(--scale-base)); /* 15 × 8px */
+  --scale-16: calc(16 * var(--scale-base)); /* 16 × 8px */
+  --scale-17: calc(17 * var(--scale-base)); /* 17 × 8px */
+  --scale-18: calc(18 * var(--scale-base)); /* 18 × 8px */
+  --scale-19: calc(19 * var(--scale-base)); /* 19 × 8px */
+  --scale-20: calc(20 * var(--scale-base)); /* 20 × 8px */
+  --scale-30: calc(30 * var(--scale-base)); /* 30 × 8px */
+  --scale-40: calc(40 * var(--scale-base)); /* 40 × 8px */
+  --scale-50: calc(50 * var(--scale-base)); /* 50 × 8px */
+  --scale-full: 888px;
+
+  /* 描边系统（Stroke System）
+     独立于 4px 体系，用于视觉精度 */
+  --stroke-xs: 0.5px;
+  --stroke-sm: 1px;
+  --stroke-md: 1.5px;
+  --stroke-lg: 2px;
+}

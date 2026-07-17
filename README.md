@@ -1,6 +1,10 @@
 # udun-website-new
 
-Udun 官网项目，基于本地 [EverGreen Design System (Website)](../evergreen-design-system-website) 构建。
+Udun 官网项目，基于 EverGreen Design System (Website) 构建。
+
+## 线上地址
+
+GitHub Pages：https://theyangsong.github.io/udun-website-new/
 
 ## 前置要求
 
