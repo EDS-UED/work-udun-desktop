@@ -89,7 +89,8 @@ export default defineNuxtConfig({
     css: {
       devSourcemap: true,
       modules: {
-        generateScopedName: isDevelopment ? '[name]__[local]' : '[name]__[local]___[hash:base64:5]',
+        // Stable scoped names so SSR-inlined CSS matches prerendered HTML (avoids FOUC on GitHub Pages).
+        generateScopedName: '[name]__[local]',
       },
     },
     server: {
