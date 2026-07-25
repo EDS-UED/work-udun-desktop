@@ -14,12 +14,24 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+env:
+  # Sibling folder in CI is always eds-website; GitHub repo slug (rename here if remote changes).
+  EDS_WEBSITE_GITHUB_REPO: eds-website
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout website
         uses: actions/checkout@v4
+        with:
+          path: udun-website-new
+
+      - name: Checkout design-system website
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/${{ env.EDS_WEBSITE_GITHUB_REPO }}
+          path: eds-website
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -31,11 +43,23 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+          cache-dependency-path: |
+            udun-website-new/pnpm-lock.yaml
+            eds-website/pnpm-lock.yaml
+
+      - name: Install & build design system
+        working-directory: eds-website
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build:tokens
+          pnpm build:components
 
       - name: Install dependencies
+        working-directory: udun-website-new
         run: pnpm install --frozen-lockfile
 
       - name: Generate static site
+        working-directory: udun-website-new
         run: pnpm generate
         env:
           NUXT_APP_BASE_URL: /udun-website-new/
@@ -43,7 +67,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .output/public
+          path: udun-website-new/.output/public
 
   deploy:
     needs: build

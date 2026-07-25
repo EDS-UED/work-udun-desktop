@@ -46,4 +46,4 @@ pnpm build
 pnpm generate
 ```
 
-GitHub Pages 会在推送到 `main` 后自动检出同账户下的设计系统仓库（见 `.github/workflows/deploy-pages.yml` 中 `EDS_WEBSITE_GITHUB_REPO`，当前为 `evergreen-design-system-website`，检出目录为 `eds-website/`）、构建设计系统并发布本站。若 GitHub 仓库改名为 `eds-website`，只需把 workflow 里该变量改为 `eds-website`。
+GitHub Pages 会在推送到 `main` 后自动检出同账户下的 **`eds-website`** 仓库（见 `.github/workflows/deploy-pages.yml` 中 `EDS_WEBSITE_GITHUB_REPO`，检出目录为 `eds-website/`）、构建设计系统并发布本站。
