@@ -26,6 +26,7 @@ const bar = ref<HTMLElement>();
 const localeNav = ref<HTMLElement>();
 let scrollFrame = 0;
 let liquidGlassRefreshFrame = 0;
+let liquidGlassRefreshTimer: ReturnType<typeof setTimeout> | undefined;
 let liquidGlassRequest = 0;
 let liquidGlassAttached = false;
 let liquidGlassStyleObserver: MutationObserver | undefined;
@@ -83,11 +84,14 @@ function supportsLiquidGlassBackdrop() {
 function refreshPinnedLiquidGlass() {
   if (!liquidGlassSurface || !usesPinnedSurface.value) return;
 
-  cancelAnimationFrame(liquidGlassRefreshFrame);
-  liquidGlassRefreshFrame = requestAnimationFrame(() => {
-    liquidGlassSurface?.updateMap();
-    liquidGlassSurface?.applyStyles();
-  });
+  clearTimeout(liquidGlassRefreshTimer);
+  liquidGlassRefreshTimer = setTimeout(() => {
+    cancelAnimationFrame(liquidGlassRefreshFrame);
+    liquidGlassRefreshFrame = requestAnimationFrame(() => {
+      liquidGlassSurface?.updateMap();
+      liquidGlassSurface?.applyStyles();
+    });
+  }, 120);
 }
 
 async function syncPinnedLiquidGlass(active: boolean) {
@@ -98,6 +102,7 @@ async function syncPinnedLiquidGlass(active: boolean) {
       const { detachLiquidGlass } = await import('@eds/website-tokens/liquid-glass');
       if (request !== liquidGlassRequest) return;
       detachLiquidGlass(bar.value);
+      bar.value.removeAttribute('data-liquid-glass');
       bar.value.style.removeProperty('backdrop-filter');
       bar.value.style.removeProperty('-webkit-backdrop-filter');
       bar.value.style.removeProperty('background');
@@ -114,6 +119,7 @@ async function syncPinnedLiquidGlass(active: boolean) {
   if (request !== liquidGlassRequest || !usesPinnedSurface.value || !bar.value) return;
 
   liquidGlassSurface = attachLiquidGlass(bar.value, { varPrefix: '--site-header-liquid' });
+  bar.value.setAttribute('data-liquid-glass', 'true');
   liquidGlassAttached = true;
 }
 
@@ -129,15 +135,9 @@ onMounted(() => {
 
   if (supportsLiquidGlassBackdrop()) {
     liquidGlassStyleObserver = new MutationObserver(refreshPinnedLiquidGlass);
-    liquidGlassStyleObserver.observe(document.head, {
-      attributes: true,
-      childList: true,
-      characterData: true,
-      subtree: true,
-    });
     liquidGlassStyleObserver.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['data-theme', 'style'],
+      attributeFilter: ['data-theme'],
     });
   }
 });
@@ -145,6 +145,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   liquidGlassRequest += 1;
   liquidGlassStyleObserver?.disconnect();
+  clearTimeout(liquidGlassRefreshTimer);
   window.removeEventListener('scroll', updatePinnedState);
   cancelAnimationFrame(scrollFrame);
   cancelAnimationFrame(liquidGlassRefreshFrame);

@@ -32,6 +32,11 @@
     -webkit-backdrop-filter 420ms ease;
 }
 
+.bar[data-liquid-glass='true'] {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .pinned {
   top: var(--spacing-1);
 }

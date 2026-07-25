@@ -260,12 +260,14 @@ onBeforeUnmount(() => animationObserver?.disconnect());
                   values="-260;824"
                   dur="6s"
                   repeatCount="indefinite"
+                  begin="1.2s"
                 />
                 <animate
                   attributeName="y2"
                   values="40;1124"
                   dur="6s"
                   repeatCount="indefinite"
+                  begin="1.2s"
                 />
               </linearGradient>
             </defs>
