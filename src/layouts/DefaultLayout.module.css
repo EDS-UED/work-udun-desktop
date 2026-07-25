@@ -7,39 +7,6 @@
   overflow-x: clip;
 }
 
-.pageBackgroundGrid {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  z-index: 0;
-  width: 100vw;
-  height: clamp(600px, 100vw, 1200px);
-  pointer-events: none;
-  opacity: 0.55;
-  transform: translateX(-50%);
-  mask-image: linear-gradient(to bottom, #000 0%, rgb(0 0 0 / 70%) 62%, transparent 100%);
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    rgb(0 0 0 / 70%) 62%,
-    transparent 100%
-  );
-}
-
-.pageBackgroundGridLines path,
-.pageBackgroundGridLines line {
-  fill: none;
-  stroke: color-mix(in display-p3, var(--material-brand-primary) 14%, transparent);
-  stroke-width: calc(var(--stroke-xs) * 0.7);
-  vector-effect: non-scaling-stroke;
-}
-
-@media (max-width: 960px) {
-  .pageBackgroundGrid {
-    width: 1400px;
-  }
-}
-
 .main {
   position: relative;
   z-index: 1;

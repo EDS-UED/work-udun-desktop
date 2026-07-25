@@ -1,0 +1,303 @@
+/*
+ * Invite-only download dialogs (Mac chip picker, Android install choice).
+ * Modal shadow: data-no-corner-smoothing required (corner-smoothing clips box-shadow).
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+  background: color-mix(in srgb, var(--text-base-primary) 35%, transparent);
+}
+
+.dialog {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 720px);
+  max-height: min(92vh, 880px);
+  padding: 0;
+  overflow: hidden;
+  border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--box-page);
+  box-shadow: 0 var(--spacing-2) var(--spacing-6) rgb(0 0 0 / 12%);
+  text-align: left;
+}
+
+.dialogBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--spacing-6);
+}
+
+.close {
+  position: absolute;
+  top: var(--spacing-1);
+  right: var(--spacing-1);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--control-input-md);
+  height: var(--control-input-md);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-base-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.close:hover {
+  background-color: var(--event-hover);
+  color: var(--text-base-primary);
+  box-shadow: none;
+}
+
+.title {
+  margin: 0;
+  padding-inline-end: var(--spacing-8);
+  font-size: var(--typography-title-small-size);
+  font-weight: var(--typography-title-small-weight);
+  line-height: var(--typography-title-small-line-height);
+  letter-spacing: -0.02em;
+  color: var(--text-base-primary);
+  text-align: center;
+}
+
+.intro {
+  margin: var(--spacing-3) 0 0;
+  color: var(--text-base-secondary);
+  font-size: var(--typography-body-small-size);
+  line-height: var(--typography-body-small-line-height);
+  text-align: center;
+}
+
+.macGuide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: var(--spacing-4);
+  align-items: start;
+  margin-top: var(--spacing-5);
+}
+
+.macStepsTitle {
+  margin: 0 0 var(--spacing-3);
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+  color: var(--text-base-primary);
+}
+
+.macStepList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.macStepItem {
+  margin: 0;
+  padding: 0;
+}
+
+.macStep {
+  display: flex;
+  gap: var(--spacing-2);
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--text-base-secondary);
+  font: inherit;
+  font-size: var(--typography-body-small-size);
+  line-height: var(--typography-body-small-line-height);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.macStep:not(.macStepActive):hover {
+  background-color: var(--event-hover);
+  box-shadow: none;
+}
+
+.macStepActive {
+  background-color: var(--event-focus-brand-weaken);
+}
+
+.macStepActive:hover {
+  background-color: var(--event-focus-brand-weaken);
+  box-shadow: none;
+}
+
+.macStep:focus,
+.macStep:focus-visible {
+  outline: none;
+}
+
+.macStep:focus:not(:hover),
+.macStep:focus-visible:not(:hover) {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.macStepActive:focus:not(:hover),
+.macStepActive:focus-visible:not(:hover) {
+  background-color: var(--event-focus-brand-weaken);
+  box-shadow: none;
+}
+
+.macStepIndex {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: var(--spacing-3);
+  height: var(--spacing-3);
+  border-radius: var(--radius-full);
+  background: var(--material-brand-primary);
+  color: var(--text-same-white-primary);
+  font-size: var(--typography-footnote-medium-strong-size);
+  font-weight: var(--typography-footnote-medium-strong-weight);
+  line-height: 1;
+}
+
+.macGuideVisual {
+  width: 100%;
+  height: 280px;
+  max-height: none;
+  border-radius: var(--radius-md);
+  border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+  background: var(--material-card-subtle);
+  object-fit: contain;
+  object-position: center;
+}
+
+.macGuideVisualPlaceholder {
+  display: grid;
+  place-items: center;
+  height: 280px;
+  min-height: 280px;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+  background: var(--material-card-subtle);
+  color: var(--text-base-tertiary);
+  font-size: var(--typography-footnote-medium-size);
+  line-height: var(--typography-body-small-line-height);
+  text-align: center;
+}
+
+.dialogActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-2);
+  align-items: start;
+  margin-top: var(--spacing-5);
+}
+
+.dialogActionItem {
+  display: flex;
+  min-width: 0;
+}
+
+/*
+ * EgButton uses CSS-module hashes in JS; global style.css uses build-time hashes.
+ * When Vite prebundle is stale, padding/size rules miss → ~26px-tall buttons.
+ * Attribute selectors mirror Button.module.css outline md (invite-only fallback).
+ */
+.dialogActionItem :global(button[data-tone='brand'][data-variant='outline'][data-size='md']) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--spacing-1);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-1-5) var(--spacing-3);
+  border: var(--stroke-sm) solid var(--stroke-color-brand);
+  border-radius: var(--radius-full);
+  background-color: var(--material-hide);
+  color: var(--text-brand-primary);
+  font-family: var(--font-family-text);
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    border-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing));
+}
+
+.dialogActionItem
+  :global(button[data-tone='brand'][data-variant='outline'][data-size='md']:hover:not(:disabled)) {
+  background-color: var(--material-brand-primary);
+  border-color: var(--material-brand-primary);
+  color: var(--text-same-white-primary);
+  box-shadow: none;
+}
+
+.dialogActionItem
+  :global(button[data-tone='brand'][data-variant='outline'][data-size='md']:active:not(:disabled)) {
+  color: var(--text-same-white-secondary);
+}
+
+.androidActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-5);
+}
+
+.androidActions .dialogActionItem {
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .dialogBody {
+    padding: var(--spacing-4);
+  }
+
+  .macGuide {
+    grid-template-columns: 1fr;
+  }
+
+  .dialogActions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .close,
+  .macStep {
+    transition: none;
+  }
+}

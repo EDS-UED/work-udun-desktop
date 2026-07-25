@@ -1,0 +1,1227 @@
+/*
+ * 硬编码说明（design token 中暂无对应变量）：
+ * - --invite-form-max-width: 600px（表单内容最大宽度）
+ * - 邮箱下拉与输入框间距 2px（scale 无 2px spacing）
+ * - 邮箱下拉需 data-no-corner-smoothing，否则 clip-path 会裁掉 box-shadow
+ *
+ * 有 token 时用变量：左右超出 --spacing-1（8px）
+ *
+ * 表单布局（勿再拆到 actions 虚化 / flex-end 压底）：
+ * - formMainShell（滚动）与 actionsShell（底栏）为并列容器，同宽对齐，actions 不再负 margin 铺满卡片
+ * - formScroll：左 --invite-form-inline-pad；右 (左 − spacing-2)，formMain/actions 再 spacing-2 滚动道，字段左右对齐
+ * - formMain 首字段 margin-top spacing-3（24px）；滚动区底 padding spacing-4（32px）；actions padding-top 0
+ * - formMain：交互点低于可视区 60% 时 smooth 滚到约 50%（keepFocusInComfortZone）
+ * - 进场：data-reveal + is-visible（复用 global 主站 reveal 动效）
+ * - 外边距下限 spacing-2（16px）；卡片内左 spacing-3，右 formScroll 为 (左 − spacing-2) + formMain 道 spacing-2 = 左（24px 时 card 右 8px + 道 16px）
+ * - 断点 640：外层固定 spacing-2；标题随页滚；注册/下载底栏横排
+ * - pageChrome 上下 clamp spacing-2→spacing-4；formScroll 上下 clamp spacing-3（24px）→spacing-5；logo 高 clamp spacing-4（32px）→control-icon-xs（36px）
+ * - ≤640：顶栏固定（禁用 reveal transform）；底 padding spacing-1；表单列左右 spacing-2；顶栏与卡片间距 spacing-1
+ * - ≤640 min-height 用 100dvh（无 token；避免 height:auto 链上 100% 失效导致 html 白底露出）
+ * - ≤640 pageChrome 左右 padding spacing-3 / spacing-1-5；OTP 行 gap spacing-1；格高 control-button-lg（56px）、宽均分
+ */
+
+.page {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  background: var(--nav-background);
+  color: var(--text-base-primary);
+}
+
+.bgEffect {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.pageChrome {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+  padding-block: clamp(var(--spacing-2), 4vw, var(--spacing-4));
+  padding-inline: clamp(var(--spacing-2), 4vw, var(--spacing-8));
+  box-sizing: border-box;
+}
+
+.pageChrome::after {
+  content: none;
+}
+
+.pageBrand {
+  display: inline-flex;
+  align-items: center;
+  height: clamp(var(--spacing-4), 4vw, var(--control-icon-xs));
+  background-color: transparent;
+  box-shadow: none;
+  transition:
+    opacity var(--site-hover-duration) var(--site-hover-easing),
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.pageBrand:hover {
+  opacity: 0.88;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.pageBrand img {
+  height: 100%;
+  width: auto;
+}
+
+/* Copied from SiteHeader localeNav / dropdownMenu / dropdownOption (invite-only) */
+.localeNav {
+  position: relative;
+}
+
+.localeNav::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
+  width: max(100%, 148px);
+  height: var(--scale-05);
+  transform: none;
+}
+
+.localeButton {
+  display: grid;
+  place-items: center;
+  width: var(--control-input-md);
+  height: var(--control-input-md);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-base-primary);
+  cursor: pointer;
+  transition:
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.localeButton:hover {
+  background-color: var(--event-hover);
+  color: var(--text-base-primary);
+  box-shadow: none;
+}
+
+.localeIcon {
+  display: block;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
+  overflow: visible;
+  color: var(--text-base-primary);
+}
+
+.panelBackIcon {
+  display: block;
+  width: var(--icon-md);
+  height: var(--icon-md);
+  overflow: visible;
+  color: var(--text-base-primary);
+}
+
+/* vector-effect does not inherit — set on the painted shape (path) */
+.localeIcon :global(path),
+.panelBackIcon :global(path) {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--stroke-lg);
+  vector-effect: non-scaling-stroke;
+}
+
+.localeMenu {
+  position: absolute;
+  top: calc(100% + var(--spacing-05));
+  right: 0;
+  left: auto;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-05);
+  min-width: 148px;
+  max-width: calc(100vw - 2 * var(--spacing-2));
+  padding: var(--spacing-1);
+  border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+  border-radius: var(--radius-md);
+  background: var(--box-page);
+  box-shadow: 0 var(--spacing-2) var(--spacing-6) rgb(0 0 0 / 12%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(calc(-1 * var(--spacing-05)));
+  transition:
+    opacity var(--site-hover-duration) var(--site-hover-easing),
+    transform var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.localeMenuOpen {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.localeOption {
+  width: 100%;
+  padding: var(--spacing-1) var(--spacing-1-5);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-base-primary);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+  transition:
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.localeOption:hover {
+  background-color: var(--event-hover);
+  box-shadow: none;
+}
+
+.localeOption:focus,
+.localeOption:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.localeOption:focus:not(:hover),
+.localeOption:focus-visible:not(:hover) {
+  background-color: transparent;
+  color: var(--text-base-primary);
+}
+
+/* Only the current locale uses brand color — not :focus (avoids two “selected” blues) */
+.localeOptionActive {
+  color: var(--text-brand-primary);
+}
+
+.localeOptionActive:focus,
+.localeOptionActive:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.localeOptionActive:focus:not(:hover),
+.localeOptionActive:focus-visible:not(:hover) {
+  background-color: transparent;
+  color: var(--text-brand-primary);
+}
+
+.localeOptionActive:hover {
+  color: var(--text-brand-primary);
+}
+
+.formColumn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding-inline: clamp(var(--spacing-2), 4vw, var(--spacing-6));
+  background: transparent;
+}
+
+.formScroll {
+  --invite-form-max-width: 600px;
+  --invite-form-inline-pad: clamp(var(--spacing-3), 4vw, var(--spacing-6));
+  --invite-form-scroll-lane: var(--spacing-2);
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--invite-form-max-width);
+  margin-inline: 0;
+  padding-block: clamp(var(--spacing-3), 4vw, var(--spacing-5));
+  padding-inline-start: var(--invite-form-inline-pad);
+  /* End pad + formMain/actions scroll-lane = start pad (fields align to card edges) */
+  padding-inline-end: calc(
+    var(--invite-form-inline-pad) - var(--invite-form-scroll-lane)
+  );
+  background: var(--box-page);
+  border-radius: var(--radius-lg);
+}
+
+.formScroll[data-phase='form'],
+.formScroll[data-phase='verify'] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.formScroll[data-phase='success'] {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-base-primary) 8%, transparent) transparent;
+  scrollbar-gutter: stable;
+}
+
+.phasePanel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+}
+
+.pageCopyright {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  margin: 0;
+  padding:
+    var(--spacing-3)
+    clamp(var(--spacing-2), 4vw, var(--spacing-8))
+    clamp(var(--spacing-2), 3vw, var(--spacing-6));
+  color: var(--text-base-tertiary);
+  font-size: var(--typography-footnote-medium-size);
+  line-height: var(--typography-footnote-medium-line-height);
+  text-align: center;
+}
+
+.panelHeader {
+  flex-shrink: 0;
+  margin-bottom: var(--spacing-2);
+  text-align: left;
+}
+
+.panelTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+}
+
+.panelBack {
+  flex-shrink: 0;
+  margin-inline-start: calc(var(--spacing-1) * -1);
+}
+
+.panelHeader h1 {
+  margin: 0;
+  min-width: 0;
+  font-size: clamp(var(--typography-title-small-size), 2vw, var(--typography-title-medium-size));
+  font-weight: var(--typography-title-medium-weight);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+
+.verifyHint {
+  margin: var(--spacing-2) 0 0;
+  color: var(--text-base-secondary);
+  font-size: var(--typography-body-small-size);
+  line-height: var(--typography-body-small-line-height);
+  word-break: break-word;
+}
+
+.verifyHintEmail {
+  color: var(--text-base-primary);
+  word-break: break-all;
+}
+
+.verifyResend {
+  margin-top: var(--spacing-2);
+}
+
+.otp {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.otpRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  width: 100%;
+}
+
+.otpCell {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 1;
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-md);
+  background-color: var(--material-card-moderate);
+  color: var(--text-base-primary);
+  font-family: var(--font-family-text);
+  font-size: var(--typography-title-medium-size);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  text-align: center;
+  caret-color: var(--text-base-primary);
+  box-shadow: inset 0 0 0 var(--stroke-lg) transparent;
+  transition:
+    background-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    box-shadow var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing));
+}
+
+.otpCell:not(.otpCellActive) {
+  pointer-events: none;
+}
+
+.otpCell:focus,
+.otpCellFocused {
+  outline: none;
+  background-color: var(--material-face-quaternary);
+  box-shadow: inset 0 0 0 var(--stroke-lg) var(--stroke-color-brand);
+}
+
+.otpCellInvalid {
+  box-shadow: inset 0 0 0 var(--stroke-lg) var(--stroke-color-danger);
+}
+
+.otpCellInvalid:focus,
+.otpCellInvalid.otpCellFocused {
+  box-shadow: inset 0 0 0 var(--stroke-lg) var(--stroke-color-danger);
+}
+
+.otpCell:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.otpPaste {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--text-brand-primary);
+  font-family: var(--font-family-text);
+  font-size: var(--typography-footnote-large-strong-size);
+  font-weight: var(--typography-footnote-large-strong-weight);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    opacity var(--site-hover-duration) var(--site-hover-easing),
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.otpPaste:hover:not(:disabled) {
+  opacity: 0.8;
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.otpPaste:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  min-height: 0;
+}
+
+.formMainShell {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.formMainShell::before,
+.formMainShell::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: var(--spacing-2);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.formMainShell::before {
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--box-page) 0%,
+    color-mix(in srgb, var(--box-page) 72%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+.formMainShell::after {
+  bottom: 0;
+  background: linear-gradient(
+    to top,
+    var(--box-page) 0%,
+    color-mix(in srgb, var(--box-page) 72%, transparent) 55%,
+    transparent 100%
+  );
+}
+
+.formMainShellFadeTop::before,
+.formMainShellFadeBottom::after {
+  opacity: 1;
+}
+
+.formMain {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  min-height: 0;
+  padding-bottom: var(--spacing-4);
+  box-sizing: border-box;
+  overflow: auto;
+  overscroll-behavior: contain;
+  /* Scroll lane: formScroll end pad + this pad; macOS overlay thumb (~6px) stays off fields */
+  padding-inline-end: var(--invite-form-scroll-lane, var(--spacing-2));
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-base-primary) 8%, transparent) transparent;
+}
+
+.formMain::-webkit-scrollbar,
+.formScroll[data-phase='success']::-webkit-scrollbar,
+.emailSuggestionsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.formMain::-webkit-scrollbar-track,
+.formScroll[data-phase='success']::-webkit-scrollbar-track,
+.emailSuggestionsList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.formMain::-webkit-scrollbar-thumb,
+.formScroll[data-phase='success']::-webkit-scrollbar-thumb,
+.emailSuggestionsList::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--text-base-primary) 8%, transparent);
+}
+
+.formMain::-webkit-scrollbar-thumb:hover,
+.formScroll[data-phase='success']::-webkit-scrollbar-thumb:hover,
+.emailSuggestionsList::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text-base-primary) 16%, transparent);
+}
+
+.formMain > .field:first-child {
+  margin-top: var(--spacing-3);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.fieldControl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.fieldControl > span {
+  display: block;
+}
+
+.field > small {
+  display: block;
+}
+
+.field small {
+  color: var(--text-danger-primary);
+  font-size: var(--typography-footnote-medium-size);
+  line-height: var(--typography-footnote-medium-line-height);
+}
+
+.emailInputWrap {
+  position: relative;
+  width: 100%;
+}
+
+/* Matches SiteHeader .dropdownMenu + .dropdownOption; shadow on outer (overflow clips box-shadow) */
+.emailSuggestions {
+  position: fixed;
+  z-index: 101;
+  min-width: 148px;
+  padding: var(--spacing-1);
+  overflow: visible;
+  border: var(--stroke-xs) solid var(--stroke-outline-subtle);
+  border-radius: var(--radius-md);
+  background: var(--box-page);
+  /* Must pair with data-no-corner-smoothing — clip-path from corner-smoothing clips box-shadow */
+  box-shadow: 0 var(--spacing-2) var(--spacing-6) rgb(0 0 0 / 12%);
+}
+
+.emailSuggestionsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-05);
+  max-height: calc(var(--spacing-6) * 7);
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-base-primary) 8%, transparent) transparent;
+}
+
+.emailSuggestionItem {
+  width: 100%;
+  padding: var(--spacing-1) var(--spacing-1-5);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-base-primary);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  font: inherit;
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+  transition:
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.emailSuggestionItem:hover {
+  background-color: var(--event-hover);
+  box-shadow: none;
+}
+
+.emailSuggestionItem:focus,
+.emailSuggestionItem:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.emailSuggestionItem:focus:not(:hover),
+.emailSuggestionItem:focus-visible:not(:hover) {
+  background-color: transparent;
+  color: var(--text-base-primary);
+}
+
+.contactBlock {
+  display: grid;
+  gap: var(--spacing-2);
+}
+
+.contactTitle {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-1);
+}
+
+.contactRadios {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+}
+
+.contactRadios .contactRadio {
+  gap: var(--spacing-1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.agreementWrap {
+  display: grid;
+  gap: var(--spacing-1);
+  box-sizing: border-box;
+  padding-inline: 0;
+  transition: padding-inline var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.agreementShake {
+  /* Temporary gutter so translateX is not clipped by formMain overflow */
+  padding-inline: var(--spacing-05);
+}
+
+.agreementShake .agreement {
+  animation: inviteAgreementShake 800ms var(--site-hover-easing);
+}
+
+@keyframes inviteAgreementShake {
+  0% {
+    transform: translateX(0);
+  }
+  12% {
+    transform: translateX(calc(-1 * var(--spacing-05)));
+  }
+  24% {
+    transform: translateX(var(--spacing-05));
+  }
+  36% {
+    transform: translateX(calc(-1 * var(--spacing-05)));
+  }
+  48% {
+    transform: translateX(var(--spacing-05));
+  }
+  60% {
+    transform: translateX(calc(-1 * var(--spacing-05)));
+  }
+  72% {
+    transform: translateX(calc(0.5 * var(--spacing-05)));
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.agreementWrap .agreement {
+  align-items: center;
+  gap: var(--spacing-1);
+  cursor: pointer;
+}
+
+.agreement :global([class*='_label_']) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+}
+
+.agreement :global(.typography-footnote-large) {
+  color: var(--text-base-primary);
+}
+
+.actionsShell {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding-top: var(--spacing-2);
+  /* Match formMain scroll lane so buttons align with field column */
+  padding-inline-end: var(--invite-form-scroll-lane, var(--spacing-2));
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-1-5);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.inviteActionItem {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+
+/*
+ * EgButton CSS-module hash can desync from style.css after DS rebuild (Vite cache).
+ * data-* fallbacks + icon slot sizing (invite-only).
+ */
+.inviteActionItem :global(button[data-tone='brand'][data-variant='solid'][data-size='lg']) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--spacing-1);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-2) var(--spacing-4);
+  border: 0;
+  border-radius: var(--radius-full);
+  background-color: var(--material-brand-primary);
+  color: var(--text-same-white-primary);
+  font-family: var(--font-family-text);
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    border-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing));
+}
+
+.inviteActionItem :global(button[data-tone='brand'][data-variant='outline'][data-size='md']) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--spacing-1);
+  width: 100%;
+  margin: 0;
+  padding: var(--spacing-1-5) var(--spacing-3);
+  border: var(--stroke-sm) solid var(--stroke-color-brand);
+  border-radius: var(--radius-full);
+  background-color: var(--material-hide);
+  color: var(--text-brand-primary);
+  font-family: var(--font-family-text);
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transition:
+    background-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    border-color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing)),
+    color var(--eds-motion-control-duration, var(--site-hover-duration))
+      var(--eds-motion-ease-in-out, var(--site-hover-easing));
+}
+
+.inviteActionItem
+  :global(button[data-tone='brand'][data-variant='outline'][data-size='md']:hover:not(:disabled)) {
+  background-color: var(--material-brand-primary);
+  border-color: var(--material-brand-primary);
+  color: var(--text-same-white-primary);
+  box-shadow: none;
+}
+
+.inviteActionItem
+  :global(button[data-tone='brand'][data-variant='outline'][data-size='md']:active:not(:disabled)) {
+  color: var(--text-same-white-secondary);
+}
+
+.inviteActionItem :global(button[data-size='md'] [class*='_icon_']) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-md);
+  height: var(--icon-md);
+}
+
+.inviteActionItem :global(button[data-size='md'] [class*='_icon_'] svg) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.success {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--spacing-5);
+  min-height: 0;
+  width: 100%;
+  padding: var(--spacing-4) 0 0;
+  text-align: center;
+}
+
+.successHero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-4);
+}
+
+.successIcon {
+  display: grid;
+  place-items: center;
+  width: var(--spacing-8);
+  height: var(--spacing-8);
+  border-radius: var(--radius-full);
+  background: var(--material-brand-primary);
+  color: var(--text-same-white-primary);
+  animation: invite-success-pop 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.successIcon svg {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+}
+
+.successCheck {
+  stroke-dasharray: 28;
+  stroke-dashoffset: 28;
+  animation: invite-success-check 0.45s ease-out 0.22s forwards;
+}
+
+.successHero h1 {
+  margin: 0;
+  font-size: var(--typography-title-medium-size);
+  font-weight: var(--typography-title-medium-weight);
+  line-height: var(--typography-title-medium-line-height);
+  letter-spacing: -0.02em;
+  color: var(--text-base-primary);
+}
+
+.successCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  width: 100%;
+  padding: var(--spacing-4);
+  border-radius: var(--radius-md);
+  background: var(--material-card-subtle);
+  text-align: left;
+}
+
+.successRow {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  min-width: 0;
+}
+
+.successLabel {
+  flex-shrink: 0;
+  color: var(--text-base-secondary);
+  font-size: var(--typography-body-small-size);
+  line-height: var(--typography-body-small-line-height);
+}
+
+.successValue {
+  min-width: 0;
+  color: var(--text-base-primary);
+  font-size: var(--typography-body-small-size);
+  font-weight: var(--weight-medium);
+  line-height: var(--typography-body-small-line-height);
+  word-break: break-all;
+}
+
+.successCopy {
+  flex-shrink: 0;
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--text-brand-primary);
+  font-family: var(--font-family-text);
+  font-size: var(--typography-body-small-size);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    opacity var(--site-hover-duration) var(--site-hover-easing),
+    background-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing);
+}
+
+.successCopy:hover {
+  opacity: 0.8;
+  background: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.successActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1-5);
+  width: 100%;
+  margin-top: auto;
+  padding-top: var(--spacing-2);
+}
+
+@media (max-width: 1024px) {
+  .page {
+    overflow: auto;
+  }
+
+  .formColumn {
+    height: auto;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  /*
+   * Break flex height trap (html/body/#__nuxt are height:100% + #__nuxt overflow:hidden in global.css).
+   * Invite-only :global — component loads only on /invite.
+   */
+  /*
+   * min-height: 100% fails when parent height is auto — body shrink-wraps content and
+   * html (global box-page white) shows below the invite chrome. Use dvh + nav bg on html.
+   */
+  :global(html[data-invite-page='true']) {
+    background: var(--nav-background);
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
+  :global(html[data-invite-page='true'] body),
+  :global(html[data-invite-page='true'] #__nuxt) {
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
+  :global(html[data-invite-page='true'] #__nuxt) {
+    overflow: visible;
+  }
+
+  .page {
+    height: auto;
+    min-height: 100dvh;
+    max-height: none;
+    overflow: visible;
+    --invite-chrome-block: calc(
+      clamp(var(--spacing-2), 4vw, var(--spacing-4)) +
+        max(
+          clamp(var(--spacing-4), 4vw, var(--control-icon-xs)),
+          var(--control-input-md)
+        ) +
+        var(--spacing-1)
+    );
+  }
+
+  .pageChrome {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    padding-block-start: clamp(var(--spacing-2), 4vw, var(--spacing-4));
+    padding-block-end: var(--spacing-1);
+    padding-inline-start: var(--spacing-3);
+    padding-inline-end: var(--spacing-1-5);
+    background: var(--nav-background);
+    isolation: isolate;
+    transform: none;
+    transition: none;
+  }
+
+  .pageChrome[data-reveal],
+  .pageChrome[data-reveal].is-visible {
+    transform: none;
+  }
+
+  .pageChrome::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: var(--spacing-3);
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+      to bottom,
+      var(--nav-background) 0%,
+      color-mix(in srgb, var(--nav-background) 72%, transparent) 55%,
+      transparent 100%
+    );
+    transition: opacity var(--site-hover-duration) var(--site-hover-easing);
+  }
+
+  .pageChromeFadeBottom::after {
+    opacity: 1;
+  }
+
+  .formColumn {
+    flex: 0 0 auto;
+    min-height: auto;
+    padding-inline: var(--spacing-2);
+    padding-top: calc(var(--invite-chrome-block) + var(--spacing-1));
+  }
+
+  .pageCopyright {
+    padding-inline: var(--spacing-2);
+  }
+
+  .formScroll {
+    flex: 0 0 auto;
+    min-height: auto;
+    height: auto;
+  }
+
+  /* Title + fields scroll with page (not pinned above formMain) */
+  .formScroll[data-phase='form'],
+  .formScroll[data-phase='verify'],
+  .formScroll[data-phase='success'] {
+    overflow: visible;
+    overscroll-behavior: auto;
+  }
+
+  .phasePanel {
+    flex: 0 1 auto;
+    min-height: auto;
+  }
+
+  .form {
+    flex: 0 1 auto;
+    min-height: auto;
+  }
+
+  .formMainShell {
+    flex: 0 1 auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .formMainShell::before,
+  .formMainShell::after {
+    display: none;
+  }
+
+  .formMain {
+    flex: 0 1 auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .actions {
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--spacing-2);
+  }
+
+  .actions .inviteActionItem {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .successActions {
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--spacing-2);
+  }
+
+  .successActions .inviteActionItem {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .otp {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .otpRow {
+    gap: var(--spacing-1);
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .otpCell {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: var(--control-button-lg);
+    min-height: var(--control-button-lg);
+    max-height: var(--control-button-lg);
+    aspect-ratio: auto;
+    border-radius: var(--radius-sm);
+  }
+
+  .success {
+    padding-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .formMainShell::before,
+  .formMainShell::after,
+  .localeMenu,
+  .localeButton,
+  .localeOption,
+  .agreementWrap,
+  .pageChrome::after {
+    transition: none;
+  }
+
+  .agreementShake .agreement {
+    animation: none;
+  }
+
+  .successIcon,
+  .successCheck {
+    animation: none;
+  }
+
+  .successCheck {
+    stroke-dashoffset: 0;
+  }
+
+  .localeMenu {
+    transform: translateY(0);
+  }
+}
+
+@keyframes invite-success-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+
+  65% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes invite-success-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+

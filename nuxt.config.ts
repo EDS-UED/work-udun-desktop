@@ -1,12 +1,18 @@
 import { resolve } from 'node:path';
 
 const projectRoot = resolve(__dirname);
-const tokensRoot = resolve(projectRoot, 'vendor/evergreen-tokens');
+const websiteRepoRoot = resolve(projectRoot, '../eds-website');
+const tokensRoot = resolve(websiteRepoRoot, 'packages/tokens');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const baseURL = process.env.NUXT_APP_BASE_URL || '/';
 
 export default defineNuxtConfig({
   srcDir: 'src/',
+  vue: {
+    compilerOptions: {
+      whitespace: 'condense',
+    },
+  },
   devtools: { enabled: isDevelopment },
   css: ['~/styles/global.css'],
   compatibilityDate: '2026-07-17',
@@ -33,14 +39,14 @@ export default defineNuxtConfig({
       script: [
         {
           innerHTML:
-            "try{const t=localStorage.getItem('udun-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch{}",
+            "try{document.documentElement.dataset.theme='light'}catch{}",
           tagPosition: 'head',
         },
       ],
     },
   },
   devServer: {
-    port: 5177,
+    port: 5178,
   },
   nitro: {
     prerender: {
@@ -52,6 +58,7 @@ export default defineNuxtConfig({
         '/download',
         '/developers',
         '/help-center',
+        '/invite',
       ],
     },
   },
@@ -65,14 +72,16 @@ export default defineNuxtConfig({
         '@': resolve(projectRoot, 'src'),
         ...(isDevelopment
           ? {
-              '@evergreen/tokens/liquid-glass': resolve(tokensRoot, 'src/liquid-glass.js'),
-              '@evergreen/tokens/corner-smoothing': resolve(tokensRoot, 'src/corner-smoothing.js'),
+              '@eds/website-tokens/liquid-glass': resolve(tokensRoot, 'src/liquid-glass.js'),
+              '@eds/website-tokens/corner-smoothing': resolve(tokensRoot, 'src/corner-smoothing.js'),
             }
           : {}),
       },
     },
     optimizeDeps: {
-      exclude: ['@evergreen/tokens'],
+      exclude: ['@eds/website-tokens'],
+      include: ['@eds/website-components'],
+      // Rebuild eds-website components then delete node_modules/.vite if EgButton looks unstyled.
     },
     build: {
       target: 'es2022',
@@ -85,10 +94,10 @@ export default defineNuxtConfig({
     },
     server: {
       fs: {
-        allow: [projectRoot],
+        allow: [projectRoot, websiteRepoRoot],
       },
       watch: {
-        ignored: ['**/.git/**', '**/node_modules/**', '**/vendor/**/dist/**'],
+        ignored: ['**/.git/**', '**/node_modules/**', '**/eds-website/packages/tokens/dist/**'],
       },
     },
   },

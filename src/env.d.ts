@@ -9,5 +9,5 @@ declare module '*.module.css' {
   export default classes;
 }
 
-declare module '@evergreen/tokens/liquid-glass';
-declare module '@evergreen/tokens/corner-smoothing';
+declare module '@eds/website-tokens/liquid-glass';
+declare module '@eds/website-tokens/corner-smoothing';

@@ -1,8 +1,0 @@
-/**
- * Do not edit directly, this file was auto-generated from Figma tokens.
- * Effect System — liquid glass ready hook.
- */
-
-.effect-flotation-box__glass[data-liquid-glass-ready], .effect-popup-box__glass[data-liquid-glass-ready] {
-  /* backdrop-filter 由 initLiquidGlass() 按元素尺寸注入 SVG filter url */
-}

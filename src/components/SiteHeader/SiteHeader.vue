@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { EgIcon } from '@evergreen/components';
+import { EgIcon } from '@eds/website-components';
 import { useI18n } from 'vue-i18n';
 import { storeLocale, type AppLocale } from '@/i18n/locale';
 import { publicAsset } from '@/utils/publicAsset';
@@ -95,7 +95,7 @@ async function syncPinnedLiquidGlass(active: boolean) {
 
   if (!active) {
     if (liquidGlassAttached && bar.value) {
-      const { detachLiquidGlass } = await import('@evergreen/tokens/liquid-glass');
+      const { detachLiquidGlass } = await import('@eds/website-tokens/liquid-glass');
       if (request !== liquidGlassRequest) return;
       detachLiquidGlass(bar.value);
       bar.value.style.removeProperty('backdrop-filter');
@@ -110,7 +110,7 @@ async function syncPinnedLiquidGlass(active: boolean) {
   if (liquidGlassAttached || !supportsLiquidGlassBackdrop()) return;
 
   await nextTick();
-  const { attachLiquidGlass } = await import('@evergreen/tokens/liquid-glass');
+  const { attachLiquidGlass } = await import('@eds/website-tokens/liquid-glass');
   if (request !== liquidGlassRequest || !usesPinnedSurface.value || !bar.value) return;
 
   liquidGlassSurface = attachLiquidGlass(bar.value, { varPrefix: '--site-header-liquid' });
@@ -152,7 +152,7 @@ onBeforeUnmount(() => {
 
   const element = bar.value;
   if (liquidGlassAttached && element) {
-    void import('@evergreen/tokens/liquid-glass').then(({ detachLiquidGlass }) => {
+    void import('@eds/website-tokens/liquid-glass').then(({ detachLiquidGlass }) => {
       if (liquidGlassAttached && element) detachLiquidGlass(element);
     });
   }

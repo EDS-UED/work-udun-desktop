@@ -88,6 +88,12 @@
     box-shadow var(--site-hover-duration) var(--site-hover-easing);
 }
 
+.socials a:hover {
+  background: color-mix(in srgb, #fff 18%, transparent);
+  color: var(--text-same-white-primary);
+  box-shadow: none;
+}
+
 .content > nav {
   display: flex;
   flex-direction: column;

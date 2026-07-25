@@ -10,13 +10,22 @@ GitHub Pages：https://theyangsong.github.io/udun-website-new/
 
 - Node.js 20+
 - pnpm 9+
+- 同级目录存在 `eds-website`：
+
+```
+Projects/
+  eds-website/       ← 设计系统规范包
+  udun-website-new/  ← 本项目
+```
 
 ## 设计系统依赖
 
 | 包 | 来源 |
 |---|---|
-| `@evergreen/tokens` | `file:./vendor/evergreen-tokens` |
-| `@evergreen/components` | `file:./vendor/evergreen-components` |
+| `@eds/website-tokens` | `link:../eds-website/packages/tokens` |
+| `@eds/website-components` | `link:../eds-website/packages/components` |
+
+设计系统近期变更与 Udun 迁移说明见 **[docs/EDS-WEBSITE-SYNC.md](./docs/EDS-WEBSITE-SYNC.md)**（含颜色语义、`EgButton` Event overlay、`EgToggle` → `EgCheckbox` / `EgRadio` 等）。
 
 ## 开发
 
@@ -25,7 +34,9 @@ pnpm install
 pnpm dev
 ```
 
-浏览器打开 http://localhost:5177/
+`predev` 会先构建 `eds-website` 的 tokens 与 components。
+
+浏览器打开 http://localhost:5178/
 
 ## 构建
 
@@ -35,4 +46,4 @@ pnpm build
 pnpm generate
 ```
 
-GitHub Pages 会在推送到 `main` 后自动构建并发布。
+GitHub Pages 会在推送到 `main` 后自动检出同账户下的设计系统仓库（见 `.github/workflows/deploy-pages.yml` 中 `EDS_WEBSITE_GITHUB_REPO`，当前为 `evergreen-design-system-website`，检出目录为 `eds-website/`）、构建设计系统并发布本站。若 GitHub 仓库改名为 `eds-website`，只需把 workflow 里该变量改为 `eds-website`。

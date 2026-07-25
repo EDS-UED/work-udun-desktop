@@ -3,6 +3,7 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 import SiteHeader from '@/components/SiteHeader/SiteHeader.vue';
 import SiteFooter from '@/components/SiteFooter/SiteFooter.vue';
 import PageBackgroundGrid from './PageBackgroundGrid.vue';
+import { applyTheme } from '@/composables/useTheme';
 import styles from './DefaultLayout.module.css';
 
 const main = ref<HTMLElement>();
@@ -51,6 +52,8 @@ function handleScrollActivity() {
 }
 
 onMounted(() => {
+  applyTheme('light');
+
   observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {

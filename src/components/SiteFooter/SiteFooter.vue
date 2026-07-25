@@ -45,10 +45,11 @@ const columns = computed(() => [
 ]);
 
 const socialLinks = [
-  { label: 'UDun on X', text: 'X' },
-  { label: 'UDun on Telegram', text: 'TG' },
-  { label: 'UDun on Medium', text: 'M' },
-] as const;
+  { label: 'UDun on X', text: 'X', to: '/invite' as const },
+  { label: 'UDun on Telegram', text: 'TG', href: '#' as const },
+  { label: 'UDun on Medium', text: 'M', href: '#' as const },
+];
+
 </script>
 
 <template>
@@ -66,9 +67,14 @@ const socialLinks = [
         </RouterLink>
         <p>{{ t('footer.description') }}</p>
         <div :class="styles.socials">
-          <a v-for="link in socialLinks" :key="link.text" href="#" :aria-label="link.label">
-            {{ link.text }}
-          </a>
+          <template v-for="link in socialLinks" :key="link.text">
+            <RouterLink v-if="'to' in link" :to="link.to" :aria-label="link.label">
+              {{ link.text }}
+            </RouterLink>
+            <a v-else :href="link.href" :aria-label="link.label">
+              {{ link.text }}
+            </a>
+          </template>
         </div>
       </section>
 

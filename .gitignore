@@ -20,10 +20,6 @@ dist-ssr
 .nitro
 .cache
 
-# Keep vendored package builds for CI / GitHub Pages
-!vendor/**/dist/
-!vendor/**/dist/**
-
 # Env / local
 *.local
 .env

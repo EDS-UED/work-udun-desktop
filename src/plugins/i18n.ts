@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.hook('app:mounted', () => {
       const locale = getStoredLocale();
       i18n.global.locale.value = locale;
-      document.documentElement.lang = locale;
+      document.documentElement.lang = locale === 'zh-TW' ? 'zh-HK' : locale;
     });
   }
 });

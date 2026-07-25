@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { EgButton } from '@evergreen/components';
+import { EgButton } from '@eds/website-components';
 import { useI18n } from 'vue-i18n';
 import BubbleButton from '@/components/BubbleButton/BubbleButton.vue';
 import ProductWindowMock from '@/components/StoryPage/ProductWindowMock.vue';
@@ -17,7 +17,7 @@ const props = defineProps<{
 
 const { locale, t } = useI18n();
 const content = computed(() => {
-  const activeLocale = locale.value === 'zh-CN' ? 'zh-CN' : 'en-US';
+  const activeLocale = locale.value === 'zh-CN' || locale.value === 'zh-TW' ? 'zh-CN' : 'en-US';
   return siteContent[activeLocale][props.page];
 });
 const homeCards = computed(() => content.value.showcaseCards ?? []);
