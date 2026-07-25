@@ -166,18 +166,43 @@
   border-radius: var(--radius-md);
   background: var(--box-page);
   box-shadow: var(--site-dropdown-shadow);
+  visibility: hidden;
   opacity: 0;
   pointer-events: none;
   transform: translate(-50%, calc(-1 * var(--spacing-05)));
   transition:
+    visibility var(--site-hover-duration) var(--site-hover-easing),
     opacity var(--site-hover-duration) var(--site-hover-easing),
     transform var(--site-hover-duration) var(--site-hover-easing);
 }
 
 .dropdownMenuOpen {
+  visibility: visible;
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .productNav:hover > .dropdownMenu,
+  .productNav:focus-within > .dropdownMenu,
+  .localeNav:hover > .dropdownMenu,
+  .localeNav:focus-within > .dropdownMenu {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+
+  .productNav:hover .chevronIconDown,
+  .productNav:focus-within .chevronIconDown {
+    opacity: 0;
+  }
+
+  .productNav:hover .chevronIconUp,
+  .productNav:focus-within .chevronIconUp {
+    opacity: 1;
+  }
 }
 
 .productMenu {

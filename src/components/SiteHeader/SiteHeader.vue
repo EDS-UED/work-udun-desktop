@@ -21,6 +21,7 @@ const route = useRoute();
 const productsOpen = ref(false);
 const menuOpen = ref(false);
 const localeOpen = ref(false);
+const hoverFlyouts = ref(false);
 const isPinned = ref(false);
 const bar = ref<HTMLElement>();
 const localeNav = ref<HTMLElement>();
@@ -53,12 +54,8 @@ function setLocale(nextLocale: AppLocale) {
   (document.activeElement as HTMLElement | null)?.blur();
 }
 
-function openLocaleMenu() {
-  localeOpen.value = true;
-}
-
-function closeLocaleMenu() {
-  localeOpen.value = false;
+function toggleLocaleMenu() {
+  localeOpen.value = !localeOpen.value;
 }
 
 function updatePinnedState() {
@@ -130,6 +127,8 @@ watch(menuOpen, (open) => {
 watch(usesPinnedSurface, syncPinnedLiquidGlass);
 
 onMounted(() => {
+  closeMenus();
+  hoverFlyouts.value = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   updatePinnedState();
   window.addEventListener('scroll', updatePinnedState, { passive: true });
 
@@ -183,11 +182,7 @@ onBeforeUnmount(() => {
           {{ item.label }}
         </RouterLink>
 
-        <div
-          :class="styles.productNav"
-          @mouseenter="productsOpen = true"
-          @mouseleave="productsOpen = false"
-        >
+        <div data-product-nav :class="styles.productNav">
           <button
             type="button"
             :class="[styles.navLink, route.path === '/wallet' || route.path === '/mpc' ? styles.navLinkActive : '']"
@@ -209,11 +204,14 @@ onBeforeUnmount(() => {
             </span>
           </button>
           <div
+            data-header-flyout
+            :data-flyout-open="productsOpen || undefined"
             :class="[
               styles.dropdownMenu,
               styles.productMenu,
               productsOpen && styles.dropdownMenuOpen,
             ]"
+            :hidden="!hoverFlyouts && !productsOpen ? true : undefined"
           >
             <RouterLink
               to="/wallet"
@@ -251,24 +249,23 @@ onBeforeUnmount(() => {
       </nav>
 
       <div :class="styles.controls">
-        <div
-          ref="localeNav"
-          :class="styles.localeNav"
-          @mouseenter="openLocaleMenu"
-          @mouseleave="closeLocaleMenu"
-        >
+        <div ref="localeNav" data-locale-nav :class="styles.localeNav">
           <button
             type="button"
             :class="styles.iconButton"
             :aria-expanded="localeOpen"
             :aria-haspopup="true"
             :aria-label="t('common.language')"
+            @click="toggleLocaleMenu"
           >
             <img :class="styles.localeIcon" :src="localeIconSrc" alt="" />
           </button>
           <div
+            data-header-flyout
+            :data-flyout-open="localeOpen || undefined"
             :class="[styles.dropdownMenu, styles.localeMenu, localeOpen && styles.dropdownMenuOpen]"
             role="menu"
+            :hidden="!hoverFlyouts && !localeOpen ? true : undefined"
           >
             <button
               type="button"
@@ -325,3 +322,38 @@ onBeforeUnmount(() => {
     </div>
   </header>
 </template>
+
+<style>
+/* Flyout visibility must not depend on CSS-module hashes (SSR can mismatch class names). */
+[data-header-flyout] {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-header-flyout][hidden] {
+  display: none !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-product-nav]:hover > [data-header-flyout],
+  [data-product-nav]:focus-within > [data-header-flyout],
+  [data-locale-nav]:hover > [data-header-flyout],
+  [data-locale-nav]:focus-within > [data-header-flyout],
+  [data-header-flyout][data-flyout-open] {
+    display: flex !important;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  [data-header-flyout][data-flyout-open] {
+    display: flex !important;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+</style>
