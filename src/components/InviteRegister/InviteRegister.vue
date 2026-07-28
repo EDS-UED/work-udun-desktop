@@ -5,11 +5,9 @@ import {
   EgInput,
   EgLink,
   EgCheckbox,
-  EgRadio,
 } from '@eds/website-components';
 import { useI18n } from 'vue-i18n';
 import { applyThemeAttribute } from '@/composables/useTheme';
-import { useNavScrollFade } from '@/composables/useNavScrollFade';
 import { storeLocale, type AppLocale } from '@/i18n/locale';
 import { rescanCornerSmoothing } from '@eds/website-tokens/corner-smoothing';
 import {
@@ -31,11 +29,16 @@ const TAKEN_EMAILS = new Set(['registered@udun.com', 'taken@udun.com']);
 
 const { t, locale } = useI18n();
 const logoSrc = publicAsset('/udun-logo.svg');
+const heroVisualSrc = publicAsset('/invite-brand-visual.png');
+const heroVisualWidth = 1024;
+const heroVisualHeight = 780;
 const localeOpen = ref(false);
-const localeNavRef = ref<HTMLElement | null>(null);
-const localeMenuRef = ref<HTMLElement | null>(null);
-const localeMenuStyle = ref<Record<string, string>>({});
-let localeMenuListenersAttached = false;
+const hoverFlyouts = ref(false);
+let localeHoverMq: MediaQueryList | null = null;
+
+function syncHoverFlyouts() {
+  hoverFlyouts.value = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+}
 
 type FieldKey =
   | 'email'
@@ -69,46 +72,29 @@ let countdownTimer: ReturnType<typeof setInterval> | undefined;
 let copyResetTimer: ReturnType<typeof setTimeout> | undefined;
 
 const INVITE_ACTIONS_COMPACT_MQ = '(max-width: 640px)';
+const INVITE_SPLIT_LAYOUT_MQ = '(min-width: 768px)';
 
 const formScrollRef = ref<HTMLElement | null>(null);
+const rightScrollRef = ref<HTMLElement | null>(null);
 const phasePanelRef = ref<HTMLElement | null>(null);
 const formMainRef = ref<HTMLElement | null>(null);
 const pageRootRef = ref<HTMLElement | null>(null);
 const compactActions = ref(false);
-const pageChromeFadeBottom = ref(false);
+const inviteMobileStack = ref(false);
 let compactActionsMq: MediaQueryList | undefined;
-let pageChromeFadeListenersAttached = false;
+let inviteSplitLayoutMq: MediaQueryList | undefined;
 
 function syncCompactActions() {
   compactActions.value = compactActionsMq?.matches ?? false;
-  setPageChromeFadeListeners(compactActions.value);
-  updatePageChromeFade();
+  inviteMobileStack.value = !(inviteSplitLayoutMq?.matches ?? false);
 }
 
-function updatePageChromeFade() {
-  if (!compactActions.value) {
-    pageChromeFadeBottom.value = false;
+function scrollInviteToTop() {
+  if (window.matchMedia(INVITE_SPLIT_LAYOUT_MQ).matches && rightScrollRef.value) {
+    rightScrollRef.value.scrollTo({ top: 0, behavior: 'auto' });
     return;
   }
-
-  const root = document.documentElement;
-  const canScroll = root.scrollHeight > root.clientHeight + 1;
-  pageChromeFadeBottom.value = canScroll && window.scrollY > 1;
-}
-
-function setPageChromeFadeListeners(active: boolean) {
-  if (active && !pageChromeFadeListenersAttached) {
-    window.addEventListener('scroll', updatePageChromeFade, { passive: true });
-    window.addEventListener('resize', updatePageChromeFade);
-    pageChromeFadeListenersAttached = true;
-    return;
-  }
-
-  if (!active && pageChromeFadeListenersAttached) {
-    window.removeEventListener('scroll', updatePageChromeFade);
-    window.removeEventListener('resize', updatePageChromeFade);
-    pageChromeFadeListenersAttached = false;
-  }
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 const registerActionLabel = computed(() => {
@@ -124,8 +110,6 @@ const agreementShaking = ref(false);
 const otpDigits = ref<string[]>(Array.from({ length: CODE_LENGTH }, () => ''));
 const otpInputRefs = ref<Array<HTMLInputElement | null>>([]);
 const otpFocusIndex = ref(0);
-const { fadeTop: formFadeTop, fadeBottom: formFadeBottom, updateFade } =
-  useNavScrollFade(formMainRef);
 
 const copyrightYear = new Date().getFullYear();
 const maskedEmail = computed(() => maskRegisterEmail(form.email));
@@ -138,12 +122,57 @@ function setOtpInputRef(el: unknown, index: number) {
   otpInputRefs.value[index] = el instanceof HTMLInputElement ? el : null;
 }
 
+function focusOtpInputForKeyboard() {
+  if (!import.meta.client) return;
+  const idx = otpActiveIndex.value;
+  otpFocusIndex.value = idx;
+
+  const run = () => {
+    const el = otpInputRefs.value[idx];
+    if (!el) return false;
+    el.readOnly = false;
+    try {
+      el.focus({ preventScroll: true });
+    } catch {
+      el.focus();
+    }
+    el.click();
+    el.select();
+    return true;
+  };
+
+  if (run()) return;
+  requestAnimationFrame(() => {
+    run();
+  });
+}
+
 function focusOtpIndex(index: number) {
   const next = Math.min(CODE_LENGTH - 1, Math.max(0, index));
   otpFocusIndex.value = next;
+  const attempt = () => {
+    const el = otpInputRefs.value[next];
+    if (!el) return false;
+    try {
+      el.focus({ preventScroll: true });
+    } catch {
+      el.focus();
+    }
+    el.select();
+    return true;
+  };
   void nextTick(() => {
-    otpInputRefs.value[next]?.focus();
-    otpInputRefs.value[next]?.select();
+    if (attempt()) return;
+    requestAnimationFrame(() => {
+      attempt();
+    });
+  });
+}
+
+function focusOtpWhenVerifyOpens() {
+  if (!import.meta.client) return;
+  requestAnimationFrame(() => {
+    focusOtpInputForKeyboard();
   });
 }
 
@@ -233,6 +262,8 @@ function onOtpKeydown(index: number, event: KeyboardEvent) {
 }
 
 function onOtpFocus(index: number) {
+  const el = otpInputRefs.value[index];
+  if (el) el.readOnly = false;
   if (index !== otpActiveIndex.value) {
     focusActiveOtp();
     return;
@@ -241,7 +272,7 @@ function onOtpFocus(index: number) {
 }
 
 function onOtpRowPointerDown() {
-  focusActiveOtp();
+  focusOtpInputForKeyboard();
 }
 
 function onOtpPaste(index: number, event: ClipboardEvent) {
@@ -261,6 +292,15 @@ async function pasteCodeFromClipboard() {
   }
 }
 
+function toggleLocaleMenu() {
+  localeOpen.value = !localeOpen.value;
+}
+
+function onLocaleButtonClick() {
+  if (hoverFlyouts.value) return;
+  toggleLocaleMenu();
+}
+
 function setLocale(nextLocale: AppLocale) {
   locale.value = nextLocale;
   /* zh-TW content is Hong Kong Traditional; tag document as zh-HK for fonts/AT */
@@ -270,83 +310,22 @@ function setLocale(nextLocale: AppLocale) {
   (document.activeElement as HTMLElement | null)?.blur();
 }
 
-function openLocaleMenu() {
-  localeOpen.value = true;
-}
-
-function closeLocaleMenu() {
-  localeOpen.value = false;
-}
-
-function updateLocaleMenuPosition() {
-  if (!localeOpen.value || !localeNavRef.value || !localeMenuRef.value) {
-    localeMenuStyle.value = {};
-    return;
-  }
-
-  const navRect = localeNavRef.value.getBoundingClientRect();
-  const menu = localeMenuRef.value;
-  const menuWidth = menu.offsetWidth;
-  const menuHeight = menu.offsetHeight;
-  /* 横向 --spacing-2（16px）；纵向/顶栏下 --spacing-1（8px）；gap --spacing-05（4px） */
-  const insetInline = 16;
-  const insetBlock = 8;
-  const gap = 4;
-
-  let left = navRect.right - menuWidth;
-  let top = navRect.bottom + gap;
-
-  left = Math.max(
-    insetInline,
-    Math.min(left, window.innerWidth - menuWidth - insetInline),
-  );
-  top = Math.max(
-    insetBlock,
-    Math.min(top, window.innerHeight - menuHeight - insetBlock),
-  );
-
-  localeMenuStyle.value = {
-    position: 'fixed',
-    top: `${top}px`,
-    left: `${left}px`,
-    right: 'auto',
-    transform: 'none',
-  };
-}
-
-function setLocaleMenuListeners(active: boolean) {
-  if (active && !localeMenuListenersAttached) {
-    window.addEventListener('scroll', updateLocaleMenuPosition, true);
-    window.addEventListener('resize', updateLocaleMenuPosition);
-    localeMenuListenersAttached = true;
-    return;
-  }
-
-  if (!active && localeMenuListenersAttached) {
-    window.removeEventListener('scroll', updateLocaleMenuPosition, true);
-    window.removeEventListener('resize', updateLocaleMenuPosition);
-    localeMenuListenersAttached = false;
-  }
-}
-
-watch(localeOpen, async (open) => {
-  if (!open) {
-    localeMenuStyle.value = {};
-    setLocaleMenuListeners(false);
-    return;
-  }
-
-  await nextTick();
-  updateLocaleMenuPosition();
-  setLocaleMenuListeners(true);
-});
-
 const contactOptions = computed(() => [
   { value: 'phone' as const, label: t('invite.phone') },
   { value: 'whatsapp' as const, label: 'WhatsApp' },
   { value: 'telegram' as const, label: 'Telegram' },
   { value: 'slack' as const, label: 'Slack' },
 ]);
+
+const contactSelectedLabel = computed(() => {
+  const match = contactOptions.value.find((option) => option.value === form.contactType);
+  return match?.label ?? '';
+});
+
+const contactOpen = ref(false);
+const contactSelectWrapRef = ref<HTMLElement | null>(null);
+const contactMenuPosition = ref<{ top: string; left: string; width: string } | null>(null);
+let contactMenuListenersAttached = false;
 
 const contactPlaceholder = computed(() => {
   switch (form.contactType) {
@@ -363,22 +342,71 @@ const contactPlaceholder = computed(() => {
   }
 });
 
-function selectContactType(type: typeof form.contactType, event?: Event) {
-  if (form.contactType === type) {
-    form.contactType = '';
-    form.contactValue = '';
-  } else {
+function toggleContactMenu() {
+  contactOpen.value = !contactOpen.value;
+  if (contactOpen.value) {
+    void nextTick(updateContactMenuPosition);
+  }
+}
+
+function closeContactMenu() {
+  contactOpen.value = false;
+}
+
+function updateContactMenuPosition() {
+  const wrap = contactSelectWrapRef.value;
+  if (!wrap || !contactOpen.value) {
+    contactMenuPosition.value = null;
+    return;
+  }
+
+  const rect = wrap.getBoundingClientRect();
+  contactMenuPosition.value = {
+    top: `${rect.bottom + 2}px`,
+    left: `calc(${rect.left}px - var(--spacing-1))`,
+    width: `calc(${rect.width}px + var(--spacing-1) * 2)`,
+  };
+}
+
+function setContactMenuListeners(active: boolean) {
+  if (active && !contactMenuListenersAttached) {
+    window.addEventListener('scroll', updateContactMenuPosition, true);
+    window.addEventListener('resize', updateContactMenuPosition);
+    contactMenuListenersAttached = true;
+    return;
+  }
+
+  if (!active && contactMenuListenersAttached) {
+    window.removeEventListener('scroll', updateContactMenuPosition, true);
+    window.removeEventListener('resize', updateContactMenuPosition);
+    contactMenuListenersAttached = false;
+  }
+}
+
+watch(contactOpen, async (open) => {
+  if (!open) {
+    contactMenuPosition.value = null;
+    setContactMenuListeners(false);
+    return;
+  }
+
+  await nextTick();
+  updateContactMenuPosition();
+  setContactMenuListeners(true);
+});
+
+function pickContactType(type: 'phone' | 'whatsapp' | 'telegram' | 'slack') {
+  if (form.contactType !== type) {
     form.contactType = type;
     form.contactValue = '';
   }
+  closeContactMenu();
 
   void nextTick(() => {
-    const fromEvent =
-      event?.currentTarget instanceof HTMLElement ? event.currentTarget : null;
     const contactInput = formMainRef.value?.querySelector<HTMLElement>(
       `.${styles.contactBlock} input`,
     );
-    scheduleComfortScroll(contactInput ?? fromEvent);
+    scheduleComfortScroll(contactInput);
   });
 }
 
@@ -390,23 +418,31 @@ function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-/** If the interaction mid-point is below 60% of formMain, scroll it to ~50%. */
+/** If the interaction mid-point is below 60% of the scrollport, scroll to ~50%. */
 function keepFocusInComfortZone(target: Element | null) {
-  const scroller = formMainRef.value;
-  if (!scroller || !(target instanceof HTMLElement)) return;
-  if (!scroller.contains(target)) return;
+  if (!(target instanceof HTMLElement)) return;
 
-  const scrollerRect = scroller.getBoundingClientRect();
+  const split = window.matchMedia(INVITE_SPLIT_LAYOUT_MQ).matches;
+  const scrollerEl = split ? rightScrollRef.value : null;
+  const viewportHeight = scrollerEl?.clientHeight ?? window.innerHeight;
+  const viewportTop = scrollerEl?.getBoundingClientRect().top ?? 0;
   const targetRect = target.getBoundingClientRect();
-  const midY = targetRect.top + targetRect.height / 2 - scrollerRect.top;
-  if (midY <= scroller.clientHeight * COMFORT_ZONE_THRESHOLD) return;
+  const midY = targetRect.top + targetRect.height / 2 - viewportTop;
+  if (midY <= viewportHeight * COMFORT_ZONE_THRESHOLD) return;
 
-  const delta = midY - scroller.clientHeight * COMFORT_ZONE_CENTER;
-  scroller.scrollBy({
+  const delta = midY - viewportHeight * COMFORT_ZONE_CENTER;
+  if (scrollerEl) {
+    scrollerEl.scrollBy({
+      top: delta,
+      behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+    });
+    return;
+  }
+
+  window.scrollBy({
     top: delta,
     behavior: prefersReducedMotion() ? 'auto' : 'smooth',
   });
-  window.setTimeout(updateFade, prefersReducedMotion() ? 0 : 360);
 }
 
 function scheduleComfortScroll(target: Element | null) {
@@ -482,7 +518,14 @@ function updateEmailMenuPosition() {
     return;
   }
 
-  const rect = wrap.getBoundingClientRect();
+  if (inviteMobileStack.value) {
+    emailMenuPosition.value = null;
+    return;
+  }
+
+  const anchor =
+    wrap.querySelector<HTMLElement>('[class*="_field_"]') ?? wrap;
+  const rect = anchor.getBoundingClientRect();
   /* gap 2px：无 2px spacing token，硬编码；左右 8 → --spacing-1 */
   emailMenuPosition.value = {
     top: `${rect.bottom + 2}px`,
@@ -492,6 +535,15 @@ function updateEmailMenuPosition() {
 }
 
 function setEmailMenuListeners(active: boolean) {
+  if (inviteMobileStack.value) {
+    if (emailMenuListenersAttached) {
+      window.removeEventListener('scroll', updateEmailMenuPosition, true);
+      window.removeEventListener('resize', updateEmailMenuPosition);
+      emailMenuListenersAttached = false;
+    }
+    return;
+  }
+
   if (active && !emailMenuListenersAttached) {
     window.addEventListener('scroll', updateEmailMenuPosition, true);
     window.addEventListener('resize', updateEmailMenuPosition);
@@ -516,6 +568,16 @@ watch(showEmailSuggestions, async (open) => {
   await nextTick();
   updateEmailMenuPosition();
   setEmailMenuListeners(true);
+});
+
+watch(inviteMobileStack, () => {
+  if (showEmailSuggestions.value) {
+    void nextTick(updateEmailMenuPosition);
+  }
+  if (!inviteMobileStack.value) {
+    return;
+  }
+  setEmailMenuListeners(false);
 });
 
 watch(
@@ -643,29 +705,31 @@ async function proceedToVerify() {
   clearAllErrors();
 
   if (!validateDetailsRequired() || !validateFormats()) {
-    nextTick(() => updateFade());
     return;
   }
 
   if (TAKEN_EMAILS.has(form.email.trim().toLowerCase())) {
     fieldErrors.email = t('invite.errors.emailTaken');
-    nextTick(() => updateFade());
     return;
   }
 
   advancing.value = true;
-  const sent = await requestVerificationCode();
-  advancing.value = false;
-
-  if (!sent) {
-    return;
-  }
-
   form.code = '';
   resetOtpDigits();
   clearError('code');
   phase.value = 'verify';
-  void nextTick(() => focusOtpIndex(0));
+  focusOtpWhenVerifyOpens();
+
+  await nextTick();
+  focusOtpInputForKeyboard();
+
+  const sent = await requestVerificationCode();
+  advancing.value = false;
+
+  if (!sent) {
+    phase.value = 'form';
+    return;
+  }
 }
 
 function goBackToForm() {
@@ -751,19 +815,22 @@ onMounted(() => {
   applyThemeAttribute('light');
   if (import.meta.client) {
     compactActionsMq = window.matchMedia(INVITE_ACTIONS_COMPACT_MQ);
+    inviteSplitLayoutMq = window.matchMedia(INVITE_SPLIT_LAYOUT_MQ);
     syncCompactActions();
     compactActionsMq.addEventListener('change', syncCompactActions);
+    inviteSplitLayoutMq.addEventListener('change', syncCompactActions);
+    localeHoverMq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    syncHoverFlyouts();
+    localeHoverMq.addEventListener('change', syncHoverFlyouts);
   }
   void nextTick(() => {
-    updateFade();
     playReveal(pageRootRef.value);
   });
 });
 
 watch(phase, async () => {
   await nextTick();
-  formScrollRef.value?.scrollTo({ top: 0, behavior: 'auto' });
-  updateFade();
+  scrollInviteToTop();
   phasePanelRef.value?.classList.add('is-visible');
   if (formScrollRef.value) {
     rescanCornerSmoothing(formScrollRef.value);
@@ -772,17 +839,17 @@ watch(phase, async () => {
     merchantIdCopied.value = false;
     window.clearTimeout(copyResetTimer);
   }
-  void nextTick(updatePageChromeFade);
 });
 
 onBeforeUnmount(() => {
-  setPageChromeFadeListeners(false);
-  setLocaleMenuListeners(false);
+  localeHoverMq?.removeEventListener('change', syncHoverFlyouts);
+  inviteSplitLayoutMq?.removeEventListener('change', syncCompactActions);
   compactActionsMq?.removeEventListener('change', syncCompactActions);
   clearInterval(countdownTimer);
   window.clearTimeout(comfortScrollTimer);
   window.clearTimeout(copyResetTimer);
   setEmailMenuListeners(false);
+  setContactMenuListeners(false);
 });
 
 useSeoMeta({
@@ -800,98 +867,129 @@ useHead({
 
 <template>
   <div ref="pageRootRef" :class="styles.page">
-    <div :class="styles.bgEffect" aria-hidden="true">
-      <DotField
-        :dot-radius="0.68"
-        :dot-spacing="14"
-        :bulge-strength="67"
-        :glow-radius="160"
-        :sparkle="false"
-        :wave-amplitude="0"
-        :cursor-radius="500"
-        :cursor-force="0.1"
-        bulge-only
-        gradient-from="#b9b9aa"
-        gradient-to="#d5d5cc"
-        glow-color="#ffffff"
-      />
-    </div>
-    <header
-      data-reveal
-      :class="[styles.pageChrome, pageChromeFadeBottom && styles.pageChromeFadeBottom]"
+    <aside
+      :class="styles.brandColumn"
+      :aria-label="t('invite.heroTitle')"
+      data-no-corner-smoothing
     >
-      <a :class="styles.pageBrand" href="/" aria-label="UDun">
-        <img :src="logoSrc" alt="" />
-      </a>
-      <div
-        ref="localeNavRef"
-        :class="styles.localeNav"
-        @mouseenter="openLocaleMenu"
-        @mouseleave="closeLocaleMenu"
-      >
-        <button
-          type="button"
-          :class="styles.localeButton"
-          :aria-expanded="localeOpen"
-          :aria-haspopup="true"
-          :aria-label="t('common.language')"
-        >
-          <svg
-            :class="styles.localeIcon"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
+      <div :class="styles.bgEffect">
+        <DotField
+          :dot-radius="0.68"
+          :dot-spacing="14"
+          :bulge-strength="67"
+          :glow-radius="160"
+          :sparkle="false"
+          :wave-amplitude="0"
+          :cursor-radius="500"
+          :cursor-force="0.1"
+          bulge-only
+          gradient-from="#b9b9aa"
+          gradient-to="#d5d5cc"
+          glow-color="#ffffff"
+        />
+      </div>
+      <div :class="styles.brandContent">
+        <a :class="styles.brandLogo" href="/" aria-label="UDun">
+          <img :src="logoSrc" alt="" />
+        </a>
+        <div :class="styles.brandCopy">
+          <h2 :class="styles.brandTitle">{{ t('invite.heroTitle') }}</h2>
+          <p :class="[styles.brandSubtitle, styles.brandSubtitleDesktop]">
+            {{ t('invite.heroSubtitle') }}
+          </p>
+          <p :class="[styles.brandSubtitle, styles.brandSubtitleMobile]">
+            {{ t('invite.heroSubtitleMobile') }}
+          </p>
+        </div>
+        <div :class="styles.brandVisual">
+          <img
+            :src="heroVisualSrc"
+            alt=""
+            :width="heroVisualWidth"
+            :height="heroVisualHeight"
+            :class="styles.brandVisualImg"
+          />
+        </div>
+        <p :class="styles.brandLegal">
+          © {{ copyrightYear }} UDun. {{ t('footer.rights') }}
+        </p>
+      </div>
+    </aside>
+
+    <div :class="styles.rightColumn">
+      <div ref="rightScrollRef" :class="styles.rightScroll">
+    <header
+      :class="styles.pageChrome"
+      data-no-corner-smoothing
+    >
+      <div :class="styles.pageChromeBar">
+        <a :class="styles.pageChromeBrand" href="/" aria-label="UDun">
+          <img :src="logoSrc" alt="" />
+        </a>
+        <div :class="styles.localeNav">
+          <button
+            type="button"
+            :class="styles.localeButton"
+            :aria-expanded="localeOpen"
+            :aria-haspopup="true"
+            :aria-label="t('common.language')"
+            @click="onLocaleButtonClick"
           >
-            <path
-              d="M14.75 8C14.75 11.7279 11.7279 14.75 8 14.75M14.75 8C14.75 4.27208 11.7279 1.25 8 1.25M14.75 8H1.25M8 14.75C4.27208 14.75 1.25 11.7279 1.25 8M8 14.75C9.55944 12.8323 10.4686 10.4684 10.5962 8C10.4686 5.53159 9.55944 3.16768 8 1.25M8 14.75C6.44056 12.8323 5.53137 10.4684 5.40385 8C5.53137 5.53159 6.44056 3.16768 8 1.25M1.25 8C1.25 4.27208 4.27208 1.25 8 1.25M1.25 7.75769H14.75"
+            <svg
+              :class="styles.localeIcon"
+              viewBox="0 0 16 16"
               fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              vector-effect="non-scaling-stroke"
-            />
-          </svg>
-        </button>
-        <div
-          ref="localeMenuRef"
-          :class="[styles.localeMenu, localeOpen && styles.localeMenuOpen]"
-          :style="localeMenuStyle"
-          role="menu"
-          data-no-corner-smoothing
-        >
-          <button
-            type="button"
-            role="menuitemradio"
-            :class="[styles.localeOption, locale === 'zh-CN' && styles.localeOptionActive]"
-            :aria-checked="locale === 'zh-CN'"
-            @click="setLocale('zh-CN')"
-          >
-            简体中文
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M14.75 8C14.75 11.7279 11.7279 14.75 8 14.75M14.75 8C14.75 4.27208 11.7279 1.25 8 1.25M14.75 8H1.25M8 14.75C4.27208 14.75 1.25 11.7279 1.25 8M8 14.75C9.55944 12.8323 10.4686 10.4684 10.5962 8C10.4686 5.53159 9.55944 3.16768 8 1.25M8 14.75C6.44056 12.8323 5.53137 10.4684 5.40385 8C5.53137 5.53159 6.44056 3.16768 8 1.25M1.25 8C1.25 4.27208 4.27208 1.25 8 1.25M1.25 7.75769H14.75"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                vector-effect="non-scaling-stroke"
+              />
+            </svg>
           </button>
-          <button
-            type="button"
-            role="menuitemradio"
-            :class="[styles.localeOption, locale === 'zh-TW' && styles.localeOptionActive]"
-            :aria-checked="locale === 'zh-TW'"
-            @click="setLocale('zh-TW')"
+          <div
+            :class="[styles.localeMenu, !hoverFlyouts && localeOpen && styles.localeMenuOpen]"
+            :hidden="!hoverFlyouts && !localeOpen ? true : undefined"
+            role="menu"
+            data-no-corner-smoothing
           >
-            繁体中文
-          </button>
-          <button
-            type="button"
-            role="menuitemradio"
-            :class="[styles.localeOption, locale === 'en-US' && styles.localeOptionActive]"
-            :aria-checked="locale === 'en-US'"
-            @click="setLocale('en-US')"
-          >
-            English
-          </button>
+            <button
+              type="button"
+              role="menuitemradio"
+              :class="[styles.localeOption, locale === 'zh-CN' && styles.localeOptionActive]"
+              :aria-checked="locale === 'zh-CN'"
+              @click="setLocale('zh-CN')"
+            >
+              简体中文
+            </button>
+            <button
+              type="button"
+              role="menuitemradio"
+              :class="[styles.localeOption, locale === 'zh-TW' && styles.localeOptionActive]"
+              :aria-checked="locale === 'zh-TW'"
+              @click="setLocale('zh-TW')"
+            >
+              繁体中文
+            </button>
+            <button
+              type="button"
+              role="menuitemradio"
+              :class="[styles.localeOption, locale === 'en-US' && styles.localeOptionActive]"
+              :aria-checked="locale === 'en-US'"
+              @click="setLocale('en-US')"
+            >
+              English
+            </button>
+          </div>
         </div>
       </div>
     </header>
-
     <section :class="styles.formColumn">
       <div
         ref="formScrollRef"
@@ -906,22 +1004,15 @@ useHead({
           :class="styles.phasePanel"
         >
           <template v-if="phase === 'form'">
-            <header :class="styles.panelHeader">
+            <header :class="[styles.panelHeader, styles.panelHeaderRegister]">
               <h1>{{ t('invite.formTitle') }}</h1>
             </header>
 
             <form :class="styles.form" @submit.prevent="proceedToVerify">
-            <div
-              :class="[
-                styles.formMainShell,
-                formFadeTop && styles.formMainShellFadeTop,
-                formFadeBottom && styles.formMainShellFadeBottom,
-              ]"
-            >
+            <div :class="styles.formMainShell" data-no-corner-smoothing>
             <div
               ref="formMainRef"
               :class="styles.formMain"
-              @scroll="updateFade"
               @focusin="onFormMainFocusIn"
               @pointerdown="onFormMainPointerDown"
             >
@@ -943,11 +1034,14 @@ useHead({
                     @blur="onEmailBlur"
                     @update:model-value="clearError('email')"
                   />
-                  <Teleport to="body">
+                  <Teleport to="body" :disabled="inviteMobileStack">
                     <div
-                      v-if="showEmailSuggestions && emailMenuPosition"
-                      :class="styles.emailSuggestions"
-                      :style="emailMenuPosition"
+                      v-if="showEmailSuggestions && (inviteMobileStack || emailMenuPosition)"
+                      :class="[
+                        styles.emailSuggestions,
+                        inviteMobileStack && styles.emailSuggestionsAnchored,
+                      ]"
+                      :style="inviteMobileStack ? undefined : emailMenuPosition ?? undefined"
                       role="menu"
                       :aria-label="t('invite.email')"
                       data-no-corner-smoothing
@@ -1009,35 +1103,83 @@ useHead({
               <small v-if="fieldErrors.password">{{ fieldErrors.password }}</small>
             </div>
 
-            <div :class="styles.contactBlock">
-              <div :class="styles.contactTitle">
-                <span class="typography-footnote-large-strong">{{ t('invite.contact') }}</span>
-                <span class="typography-footnote-medium-strong">{{ t('invite.contactOptionalHint') }}</span>
-              </div>
-              <div :class="styles.contactRadios" role="radiogroup" :aria-label="t('invite.contact')">
-                <EgRadio
-                  v-for="option in contactOptions"
-                  :key="option.value"
-                  name="contactType"
-                  :value="option.value"
-                  size="md"
-                  :model-value="form.contactType === option.value"
-                  :class="styles.contactRadio"
-                  @click.prevent="selectContactType(option.value, $event)"
-                >
-                  <span class="typography-body-small">{{ option.label }}</span>
-                </EgRadio>
-              </div>
-              <div v-if="form.contactType" :class="styles.field">
-                <div :class="styles.fieldControl">
-                  <EgInput
-                    v-model="form.contactValue"
-                    width-mode="full"
-                    size="md"
-                    :control-type="form.contactType === 'phone' ? 'tel' : 'text'"
-                    :placeholder="contactPlaceholder"
-                  />
+            <div :class="[styles.field, styles.contactBlock]">
+              <div :class="styles.fieldControl">
+                <div :class="styles.contactTitle">
+                  <span class="typography-footnote-large-strong">{{ t('invite.contact') }}</span>
+                  <span class="typography-footnote-medium-strong">{{ t('invite.contactOptionalHint') }}</span>
                 </div>
+                <div ref="contactSelectWrapRef" :class="styles.contactSelectWrap">
+                  <button
+                    type="button"
+                    :class="['eds-corner-smoothed', styles.contactSelectTrigger]"
+                    :aria-expanded="contactOpen"
+                    aria-haspopup="listbox"
+                    :aria-label="t('invite.contact')"
+                    @click="toggleContactMenu"
+                  >
+                    <span
+                      :class="[
+                        'typography-body-small',
+                        !contactSelectedLabel && styles.contactSelectPlaceholder,
+                      ]"
+                    >
+                      {{ contactSelectedLabel || t('invite.contactTypePlaceholder') }}
+                    </span>
+                    <svg
+                      :class="styles.contactSelectChevron"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 6L8 10L12 6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </svg>
+                  </button>
+                  <Teleport to="body">
+                    <div
+                      v-if="contactOpen && contactMenuPosition"
+                      :class="styles.contactSelectMenu"
+                      :style="contactMenuPosition"
+                      role="listbox"
+                      :aria-label="t('invite.contact')"
+                      data-no-corner-smoothing
+                    >
+                      <div :class="styles.contactSelectList">
+                        <button
+                          v-for="option in contactOptions"
+                          :key="option.value"
+                          type="button"
+                          role="option"
+                          :class="[
+                            styles.contactSelectOption,
+                            form.contactType === option.value && styles.contactSelectOptionActive,
+                          ]"
+                          :aria-selected="form.contactType === option.value"
+                          @mousedown.prevent="pickContactType(option.value)"
+                        >
+                          <span class="typography-body-small">{{ option.label }}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </Teleport>
+                </div>
+              </div>
+              <div v-if="form.contactType" :class="styles.fieldControl">
+                <EgInput
+                  v-model="form.contactValue"
+                  width-mode="full"
+                  size="md"
+                  :control-type="form.contactType === 'phone' ? 'tel' : 'text'"
+                  :placeholder="contactPlaceholder"
+                />
               </div>
             </div>
 
@@ -1181,18 +1323,8 @@ useHead({
             </header>
 
             <form :class="styles.form" @submit.prevent="completeRegister">
-              <div
-                :class="[
-                  styles.formMainShell,
-                  formFadeTop && styles.formMainShellFadeTop,
-                  formFadeBottom && styles.formMainShellFadeBottom,
-                ]"
-              >
-                <div
-                  ref="formMainRef"
-                  :class="styles.formMain"
-                  @scroll="updateFade"
-                >
+              <div :class="styles.formMainShell" data-no-corner-smoothing>
+                <div ref="formMainRef" :class="styles.formMain">
                   <div :class="styles.field">
                     <div
                       :class="styles.otp"
@@ -1209,8 +1341,11 @@ useHead({
                             otpActiveIndex === index && styles.otpCellActive,
                             otpFocusIndex === index && styles.otpCellFocused,
                           ]"
-                          type="text"
+                          type="tel"
                           inputmode="numeric"
+                          pattern="[0-9]*"
+                          readonly
+                          :autofocus="index === 0"
                           :autocomplete="index === 0 ? 'one-time-code' : 'off'"
                           maxlength="1"
                           :value="otpDigits[index]"
@@ -1319,8 +1454,10 @@ useHead({
         </div>
       </div>
     </section>
+      </div>
+    </div>
 
-    <p data-reveal :class="styles.pageCopyright">
+    <p :class="styles.pageLegal">
       © {{ copyrightYear }} UDun. {{ t('footer.rights') }}
     </p>
 

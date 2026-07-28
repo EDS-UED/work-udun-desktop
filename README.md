@@ -27,6 +27,10 @@ Projects/
 
 设计系统近期变更与 Udun 迁移说明见 **[docs/EDS-WEBSITE-SYNC.md](./docs/EDS-WEBSITE-SYNC.md)**（含颜色语义、`EgButton` Event overlay、`EgToggle` → `EgCheckbox` / `EgRadio` 等）。
 
+## 字体（EDS Text）
+
+全站 UI 使用 **`--font-family-text`**，首项为 **EDS Text**。字体文件在 `src/assets/fonts/`（与 `eds-doc` 同源），经 `src/styles/fonts.css` 的 `@font-face` 自托管；更新字体时从 `eds-doc/src/assets/fonts/` 同步四个 `EDSText-*.ttf` 即可。
+
 ## 开发
 
 ```bash

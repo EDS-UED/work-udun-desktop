@@ -47,6 +47,7 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 5178,
+    host: '0.0.0.0',
   },
   nitro: {
     prerender: {

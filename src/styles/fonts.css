@@ -1,0 +1,35 @@
+/*
+ * EDS Text — same files as eds-doc/src/assets/fonts (Figma / doc shell).
+ */
+
+@font-face {
+  font-family: 'EDS Text';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/EDSText-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'EDS Text';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('~/assets/fonts/EDSText-Medium.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'EDS Text';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('~/assets/fonts/EDSText-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'EDS Text';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('~/assets/fonts/EDSText-Bold.ttf') format('truetype');
+}

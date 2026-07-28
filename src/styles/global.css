@@ -1,4 +1,6 @@
+@import './fonts.css';
 @import '@eds/website-components/style.css';
+@import './eds-typography-compat.css';
 
 :root {
   --site-header-brand-logo-height: var(--control-icon-xs);
@@ -155,9 +157,9 @@ a {
 :where(
   a,
   button,
-  input,
+  input:not([class*='_input_']):not([class*='__input']),
   select,
-  textarea,
+  textarea:not([class*='_input_']):not([class*='__input']),
   summary,
   [role='button'],
   [role='link'],
@@ -166,6 +168,17 @@ a {
   transition:
     background-color var(--site-hover-duration) var(--site-hover-easing),
     background var(--site-hover-duration) var(--site-hover-easing),
+    color var(--site-hover-duration) var(--site-hover-easing),
+    border-color var(--site-hover-duration) var(--site-hover-easing),
+    outline-color var(--site-hover-duration) var(--site-hover-easing),
+    box-shadow var(--site-hover-duration) var(--site-hover-easing),
+    opacity var(--site-hover-duration) var(--site-hover-easing);
+}
+
+/* EgInput 内层透明底：勿对 background 做过渡（避免移动端点击闪灰） */
+:where(input[class*='_input_'], textarea[class*='_input_'], input[class*='__input'], textarea[class*='__input']) {
+  -webkit-tap-highlight-color: transparent;
+  transition:
     color var(--site-hover-duration) var(--site-hover-easing),
     border-color var(--site-hover-duration) var(--site-hover-easing),
     outline-color var(--site-hover-duration) var(--site-hover-easing),

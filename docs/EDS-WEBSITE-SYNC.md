@@ -6,6 +6,36 @@ Udun 通过 `link:../eds-website/packages/*` 消费 EverGreen Website 包。本�
 
 ---
 
+## 2026-07-28 — Typography / Text Styles / Scale（本地 eds-website 工作区）
+
+### 同步步骤（必做）
+
+```bash
+cd ../eds-website && pnpm build:tokens && pnpm build:components
+cd ../udun-website-new && rm -rf node_modules/.vite .nuxt
+pnpm dev   # 或 pnpm build
+```
+
+`eds-website` 若更新了 **`packages/components/vite.config.ts`**（组件库 `build.minify: false`），需一并拉取/合并，否则 `pnpm build` 可能报 Rollup **`Identifier "h" has already been declared`**（预构建 CSS Modules 短变量名与 Vue 冲突）。
+
+### Token / 排版（自动随 rebuild 生效）
+
+- DS 语义 token 改为 **`--eds-*`**；工具类为 **`.eds-*`**（见 showcase `text-styles.css`，**不**随 `@eds/website-components` 发布）。
+- Udun 增加 **`src/styles/eds-typography-compat.css`**（在 `global.css` 于 components 样式之后引入），保留 **`--typography-*` / `.typography-*`** 与 **`--font-family-text`**，避免主站/邀请页大面积改 class。
+- 新代码优先 **`--eds-*` / `.eds-*`**；旧变量仅为兼容层。
+
+### 组件样式（link + rebuild）
+
+- **Button / Input / Link / Toggle / IconButtonPro / PaginationItem** 等 module CSS 有 hover、Event overlay、Input 尺寸等调整；Udun **无需改 import**，邀请页已用 **`EgCheckbox` / `EgRadio` / `EgDecide`**，勿再用 **`EgToggle`**。
+
+### Udun 自查
+
+- [ ] `pnpm build` 通过（同步后清 `.nuxt` + `node_modules/.vite`）
+- [ ] `/invite`：EgInput、EgButton、协议勾选、语言顶栏
+- [ ] 首页 / Story：`EgButton` hover 与暗色 `--box-page`（若开 dark）
+
+---
+
 ## 2026-07-25 — 颜色语义色 / Button Event 交互
 
 ### 破坏性变更（Udun 需自查 CSS）
