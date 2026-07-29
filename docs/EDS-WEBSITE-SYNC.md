@@ -16,12 +16,29 @@ cd ../udun-website-new && rm -rf node_modules/.vite .nuxt
 pnpm dev   # 或 pnpm build
 ```
 
+**Udun 兼容层（一次引入）**：`src/styles/eds-ds-compat.css` → 子文件：
+
+| 文件 | 作用 |
+|------|------|
+| `eds-scale-compat.css` | `--control-*` → `--scale-*` |
+| `eds-typography-compat.css` | `--typography-*` / `.typography-*` → `--eds-*`；并镜像 `.eds-*` 工具类 |
+| `eds-color-compat.css` | `--text-danger-*`、`--material-*-primary`、`--event-disable-*` 等 → `--status-*` / 新 Event |
+
+本地可跑变量自检（`src` 用到的 `--*` 均能在 DS + compat 中解析）：
+
+```bash
+node scripts/verify-ds-token-coverage.mjs
+```
+
 `eds-website` 若更新了 **`packages/components/vite.config.ts`**（组件库 `build.minify: false`），需一并拉取/合并，否则 `pnpm build` 可能报 Rollup **`Identifier "h" has already been declared`**（预构建 CSS Modules 短变量名与 Vue 冲突）。
 
 ### Token / 排版（自动随 rebuild 生效）
 
 - DS 语义 token 改为 **`--eds-*`**；工具类为 **`.eds-*`**（见 showcase `text-styles.css`，**不**随 `@eds/website-components` 发布）。
-- Udun 增加 **`src/styles/eds-typography-compat.css`**（在 `global.css` 于 components 样式之后引入），保留 **`--typography-*` / `.typography-*`** 与 **`--font-family-text`**，避免主站/邀请页大面积改 class。
+- Udun 增加 **`src/styles/eds-ds-compat.css`**（聚合 scale / typography / color 兼容，见下表）。
+- **`eds-scale-compat.css`**：`--control-icon-xs` / `--control-input-md` / `--control-button-*` 等 → `--scale-*`
+- **`eds-typography-compat.css`**：`--typography-*`、`.typography-*`，并镜像 **`.eds-*`** 工具类
+- **`eds-color-compat.css`**：`--text-danger-primary` → `--status-danger` 等 legacy 语义色（在 `global.css` 于 components 样式之后引入），保留 **`--typography-*` / `.typography-*`** 与 **`--font-family-text`**，避免主站/邀请页大面积改 class。
 - 新代码优先 **`--eds-*` / `.eds-*`**；旧变量仅为兼容层。
 
 ### 组件样式（link + rebuild）

@@ -12,6 +12,12 @@
   justify-content: center;
   padding: var(--spacing-4);
   background: color-mix(in srgb, var(--text-base-primary) 35%, transparent);
+  transition: opacity var(--eds-motion-control-duration) var(--eds-motion-ease-in-out);
+}
+
+.overlay:global(.invite-download-overlay-enter-from),
+.overlay:global(.invite-download-overlay-leave-to) {
+  opacity: 0;
 }
 
 .dialog {
@@ -28,6 +34,15 @@
   background: var(--box-page);
   box-shadow: 0 var(--spacing-2) var(--spacing-6) rgb(0 0 0 / 12%);
   text-align: left;
+  transition:
+    transform var(--eds-motion-control-duration) var(--eds-motion-ease-in-out),
+    opacity var(--eds-motion-control-duration) var(--eds-motion-ease-in-out);
+}
+
+.overlay:global(.invite-download-overlay-enter-from) .dialog,
+.overlay:global(.invite-download-overlay-leave-to) .dialog {
+  opacity: 0;
+  transform: translateY(var(--spacing-3));
 }
 
 .dialogBody {
@@ -296,6 +311,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .dialog {
+    transition: none;
+  }
+
+  .overlay:global(.invite-download-overlay-enter-from) .dialog,
+  .overlay:global(.invite-download-overlay-leave-to) .dialog {
+    transform: none;
+  }
+
   .close,
   .macStep {
     transition: none;

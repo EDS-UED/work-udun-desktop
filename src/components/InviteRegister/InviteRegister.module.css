@@ -20,7 +20,13 @@
  * - ≥768：左右分栏 flex 1:1（左 100dvh + 径向渐变 12px 圆角；右独立滚动；无外层分割 padding）
  * - 左栏背景：radial-gradient 圆心 31% 61%，#FFFFFF → #E4ECF2（设计稿硬编码）
  * - ≤767：单栏整页滚动；≤640 顶栏 fixed 等移动端规则不变；≥768 pageChrome 随右栏滚动
+ * - EgInput：dist 与 index.css 模块 hash 必须一致（nuxt alias）；input_standard_md_full 作 clip/底色兜底
  */
+
+:global(html[data-invite-page='true']) .eds-corner-smoothed {
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+}
 
 /*
  * ≤767：整页滚动（覆盖 global invite height trap）
@@ -796,6 +802,35 @@
 .formMainShell::before,
 .formMainShell::after {
   content: none;
+}
+
+/*
+ * EgInput uses stable variant class input_standard_md_* (see edsVariantName).
+ * DS module hashes must match global index.css — see nuxt alias @eds/website-components → dist.
+ * Clip + token fallback if hashes ever desync again in dev.
+ */
+:global(html[data-invite-page='true']) .formMainShell .input_standard_md_full {
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+}
+
+:global(html[data-invite-page='true']) .formMainShell .input_standard_md_full:not([class*='_fieldInvalid_']) {
+  background-color: var(--material-card-moderate);
+  box-shadow: inset 0 0 0 var(--stroke-lg) transparent;
+}
+
+:global(html[data-invite-page='true']) .formMainShell .input_standard_md_full[class*='_fieldFocused_']:not([class*='_fieldInvalid_']) {
+  background-color: var(--material-face-quaternary);
+  box-shadow: inset 0 0 0 var(--stroke-lg) var(--stroke-color-brand);
+}
+
+:global(html[data-invite-page='true']) .formMainShell .input_standard_md_full[class*='_fieldInvalid_'] {
+  box-shadow: inset 0 0 0 var(--stroke-lg) var(--stroke-color-danger);
+}
+
+.formMainShell :global(input[class*='_input_']),
+.formMainShell :global(textarea[class*='_input_']) {
+  transition: color var(--eds-motion-control-duration) var(--eds-motion-ease-in-out);
 }
 
 .formMain {

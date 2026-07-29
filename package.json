@@ -2,7 +2,7 @@
   "name": "udun-website-new",
   "version": "0.1.0",
   "private": true,
-  "description": "Udun official website \u2014 built on EverGreen Design System (Website)",
+  "description": "Udun official website — built on EverGreen Design System (Website)",
   "type": "module",
   "scripts": {
     "predev": "pnpm --dir ../eds-website build:tokens && pnpm --dir ../eds-website build:components",
@@ -11,6 +11,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
+    "verify:ds-tokens": "node scripts/verify-ds-token-coverage.mjs",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {

@@ -42,12 +42,13 @@ function openUrl(url: string) {
 
 <template>
   <Teleport to="body">
-    <div
-      v-if="open"
-      :class="styles.overlay"
-      role="presentation"
-      @click.self="emit('close')"
-    >
+    <Transition name="invite-download-overlay" appear>
+      <div
+        v-if="open"
+        :class="styles.overlay"
+        role="presentation"
+        @click.self="emit('close')"
+      >
       <div
         role="dialog"
         aria-modal="true"
@@ -95,5 +96,6 @@ function openUrl(url: string) {
         </div>
       </div>
     </div>
+    </Transition>
   </Teleport>
 </template>

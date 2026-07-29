@@ -1,0 +1,21 @@
+/**
+ * Udun compat: legacy --control-* scale tokens removed in eds-website 2026-07 scale spec.
+ * Maps to equivalent --scale-* / --avatar-* until site CSS migrates to new names.
+ */
+:root {
+  --control-button-xs: var(--scale-4);
+  --control-button-sm: var(--scale-5);
+  --control-button-md: var(--scale-6);
+  --control-button-lg: var(--scale-7);
+  --control-button-xl: var(--scale-7-5);
+
+  --control-icon-xs: var(--scale-4-5);
+  --control-icon-sm: var(--scale-5);
+  --control-icon-md: var(--scale-6);
+  --control-icon-lg: var(--scale-6-5);
+  --control-icon-xl: var(--scale-7);
+
+  --control-input-sm: var(--scale-4-5);
+  --control-input-md: var(--scale-5-5);
+  --control-input-lg: var(--scale-6-5);
+}

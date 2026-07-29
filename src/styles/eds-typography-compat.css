@@ -5,6 +5,7 @@
 
 :root {
   --font-family-text: var(--eds-family-sans);
+  --font-family-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --typography-display-large-size: var(--eds-display-large-size);
   --typography-display-large-weight: var(--eds-display-large-weight);
   --typography-display-large-line-height: var(--eds-display-large-line-height);
@@ -194,6 +195,120 @@
 
 
 .typography-footnote-medium-strong {
+  font-size: var(--typography-footnote-medium-strong-size);
+  font-weight: var(--typography-footnote-medium-strong-weight);
+  line-height: var(--typography-footnote-medium-strong-line-height);
+}
+/* Mirror .eds-* class names (showcase text-styles naming) */
+.eds-display-large {
+  font-size: var(--typography-display-large-size);
+  font-weight: var(--typography-display-large-weight);
+  line-height: var(--typography-display-large-line-height);
+}
+
+.eds-display-medium {
+  font-size: var(--typography-display-medium-size);
+  font-weight: var(--typography-display-medium-weight);
+  line-height: var(--typography-display-medium-line-height);
+}
+
+.eds-display-small {
+  font-size: var(--typography-display-small-size);
+  font-weight: var(--typography-display-small-weight);
+  line-height: var(--typography-display-small-line-height);
+}
+
+.eds-headline-large {
+  font-size: var(--typography-headline-large-size);
+  font-weight: var(--typography-headline-large-weight);
+  line-height: var(--typography-headline-large-line-height);
+}
+
+.eds-headline-medium {
+  font-size: var(--typography-headline-medium-size);
+  font-weight: var(--typography-headline-medium-weight);
+  line-height: var(--typography-headline-medium-line-height);
+}
+
+.eds-headline-small {
+  font-size: var(--typography-headline-small-size);
+  font-weight: var(--typography-headline-small-weight);
+  line-height: var(--typography-headline-small-line-height);
+}
+
+.eds-title-large {
+  font-size: var(--typography-title-large-size);
+  font-weight: var(--typography-title-large-weight);
+  line-height: var(--typography-title-large-line-height);
+}
+
+.eds-title-medium {
+  font-size: var(--typography-title-medium-size);
+  font-weight: var(--typography-title-medium-weight);
+  line-height: var(--typography-title-medium-line-height);
+}
+
+.eds-title-small {
+  font-size: var(--typography-title-small-size);
+  font-weight: var(--typography-title-small-weight);
+  line-height: var(--typography-title-small-line-height);
+}
+
+.eds-body-large {
+  font-size: var(--typography-body-large-size);
+  font-weight: var(--typography-body-large-weight);
+  line-height: var(--typography-body-large-line-height);
+}
+
+.eds-body-large-strong {
+  font-size: var(--typography-body-large-strong-size);
+  font-weight: var(--typography-body-large-strong-weight);
+  line-height: var(--typography-body-large-strong-line-height);
+}
+
+.eds-body-medium {
+  font-size: var(--typography-body-medium-size);
+  font-weight: var(--typography-body-medium-weight);
+  line-height: var(--typography-body-medium-line-height);
+}
+
+.eds-body-medium-strong {
+  font-size: var(--typography-body-medium-strong-size);
+  font-weight: var(--typography-body-medium-strong-weight);
+  line-height: var(--typography-body-medium-strong-line-height);
+}
+
+.eds-body-small {
+  font-size: var(--typography-body-small-size);
+  font-weight: var(--typography-body-small-weight);
+  line-height: var(--typography-body-small-line-height);
+}
+
+.eds-body-small-strong {
+  font-size: var(--typography-body-small-strong-size);
+  font-weight: var(--typography-body-small-strong-weight);
+  line-height: var(--typography-body-small-strong-line-height);
+}
+
+.eds-footnote-large {
+  font-size: var(--typography-footnote-large-size);
+  font-weight: var(--typography-footnote-large-weight);
+  line-height: var(--typography-footnote-large-line-height);
+}
+
+.eds-footnote-large-strong {
+  font-size: var(--typography-footnote-large-strong-size);
+  font-weight: var(--typography-footnote-large-strong-weight);
+  line-height: var(--typography-footnote-large-strong-line-height);
+}
+
+.eds-footnote-medium {
+  font-size: var(--typography-footnote-medium-size);
+  font-weight: var(--typography-footnote-medium-weight);
+  line-height: var(--typography-footnote-medium-line-height);
+}
+
+.eds-footnote-medium-strong {
   font-size: var(--typography-footnote-medium-strong-size);
   font-weight: var(--typography-footnote-medium-strong-weight);
   line-height: var(--typography-footnote-medium-strong-line-height);

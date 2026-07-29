@@ -1,0 +1,28 @@
+/**
+ * Udun compat: legacy semantic color tokens dropped or renamed in eds-website 2026-07.
+ * See docs/EDS-WEBSITE-SYNC.md and packages/tokens/spec/color/semantic.json.
+ */
+:root,
+[data-theme='light'],
+[data-theme='dark'] {
+  /* Text → Status */
+  --text-danger-primary: var(--status-danger);
+  --text-danger-secondary: var(--status-danger-weaken);
+  --text-success: var(--status-success);
+  --text-warning: var(--status-warning);
+  --text-match: var(--eds-match);
+
+  /* Material (status fills) → Status */
+  --material-danger-primary: var(--status-danger);
+  --material-danger-quaternary: var(--status-danger-weaken);
+  --material-success-primary: var(--status-success);
+  --material-success-quaternary: var(--status-success-weaken);
+  --material-warning-primary: var(--status-warning);
+  --material-warning-quaternary: var(--status-warning-weaken);
+
+  /* Event disable / hover legacy names */
+  --event-disable-base: var(--status-disable-base);
+  --event-disable-base-weaken: var(--status-disable-base-weaken);
+  --event-disable-base-waken: var(--status-disable-base-weaken);
+  --event-hover-secondary: var(--event-hover);
+}

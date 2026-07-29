@@ -11,7 +11,14 @@ type StorySection = {
   tags?: string[];
   cta?: { label: string; to: string };
   tone?: 'plain' | 'soft' | 'dark';
-  visual?: 'chains' | 'security' | 'organization' | 'automation' | 'platform' | 'globe';
+  visual?:
+    | 'chains'
+    | 'security'
+    | 'organization'
+    | 'automation'
+    | 'platform'
+    | 'globe'
+    | 'apiIntegration';
 };
 
 type StoryPage = {
@@ -48,12 +55,12 @@ const english: SiteContent = {
     primaryCta: { label: 'Download Now', to: '/download' },
     secondaryCta: { label: 'Visit Developer Center', to: '/developers' },
     showcaseCards: [
-      ['Assets', 'Cross-chain management'],
-      ['MPC Security', 'Distributed key protection'],
-      ['Team Access', 'Roles and approvals'],
-      ['Automation', 'High-volume operations'],
-      ['Monitoring', 'Continuous visibility'],
-      ['API', 'Programmatic control'],
+      ['Unified Management', 'Every chain in one unified view'],
+      ['MPC Security', 'Keys held as distributed shards'],
+      ['Team Workflows', 'Role-based access and approvals'],
+      ['Custom Structure', 'Wallets shaped to your organization'],
+      ['Automation', 'Smart operations w/ hands-free experience'],
+      ['API Access', 'Programmable control via robust APIs'],
     ],
     sections: [
       {
@@ -312,16 +319,13 @@ const english: SiteContent = {
     },
   },
   download: {
-    eyebrow: 'UDun Wallet 3.0',
     title: 'Download Udun Wallet 3.0',
     subtitle:
       'Get started with secure, MPC-powered digital asset management. Available on desktop and mobile.',
-    primaryCta: { label: 'Download for macOS', to: '#downloads' },
-    secondaryCta: { label: 'Download for Windows', to: '#downloads' },
     sections: [
       {
         eyebrow: 'Available everywhere',
-        title: 'Choose the platform that works for your team.',
+        title: 'Or choose the platform that works for your team below.',
         features: [
           { title: 'macOS', body: 'Native desktop access for Apple silicon and Intel Macs.' },
           { title: 'Windows', body: 'Secure operations across your business workstations.' },
@@ -336,7 +340,7 @@ const english: SiteContent = {
         title: 'Ready to integrate?',
         body: 'Connect deposits, withdrawals, and asset management to your systems through our API interfaces.',
         cta: { label: 'Visit Developer Center', to: '/developers' },
-        visual: 'automation',
+        visual: 'apiIntegration',
       },
       {
         eyebrow: 'Legacy access',
@@ -399,12 +403,12 @@ const chinese: SiteContent = {
     primaryCta: { label: '立即下载', to: '/download' },
     secondaryCta: { label: '前往开发者中心', to: '/developers' },
     showcaseCards: [
-      ['资产管理', '跨链资产集中管理'],
-      ['MPC 安全', '分布式私钥保护'],
-      ['团队权限', '角色与审批流程'],
-      ['自动化', '高频操作自动执行'],
-      ['实时监控', '持续掌握资产动态'],
-      ['API 接入', '程序化控制能力'],
+      ['跨鏈資產集中管理', '多鏈、多帳戶資產集中管理，即時掌握全局動態'],
+      ['MPC 安全', '私鑰分片分散儲存，降低單點洩露風險'],
+      ['企業式資管模式', '角色權限分明，審批流程清晰'],
+      ['自定義錢包架構', '自訂結構，貼合企業組織體系'],
+      ['業務自動化', '自動化操作執行，減少人工負擔'],
+      ['API 接入', '完善的開發者工具，實現程式化整合'],
     ],
     sections: [
       {
@@ -653,15 +657,12 @@ const chinese: SiteContent = {
     },
   },
   download: {
-    eyebrow: '优盾钱包 3.0',
     title: '下载优盾钱包 3.0',
     subtitle: '立即体验 MPC 技术守护的安全资产管理，支持桌面与移动设备。',
-    primaryCta: { label: '下载 macOS 版', to: '#downloads' },
-    secondaryCta: { label: '下载 Windows 版', to: '#downloads' },
     sections: [
       {
         eyebrow: '支持多端使用',
-        title: '选择适合团队的设备平台',
+        title: '或从下方选择适合你们团队的平台。',
         features: [
           { title: 'macOS', body: '支持 Apple 芯片与 Intel Mac 的桌面体验。' },
           { title: 'Windows', body: '在企业工作设备上安全管理资产。' },
@@ -676,7 +677,7 @@ const chinese: SiteContent = {
         title: '准备好对接了吗？',
         body: '通过 API 接口，将充值、提现与资产管理接入你的系统。',
         cta: { label: '前往开发者中心', to: '/developers' },
-        visual: 'automation',
+        visual: 'apiIntegration',
       },
       {
         eyebrow: '旧版入口',

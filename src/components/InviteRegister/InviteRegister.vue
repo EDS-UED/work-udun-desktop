@@ -9,7 +9,6 @@ import {
 import { useI18n } from 'vue-i18n';
 import { applyThemeAttribute } from '@/composables/useTheme';
 import { storeLocale, type AppLocale } from '@/i18n/locale';
-import { rescanCornerSmoothing } from '@eds/website-tokens/corner-smoothing';
 import {
   DOWNLOAD_URLS,
   detectClientPlatform,
@@ -832,9 +831,6 @@ watch(phase, async () => {
   await nextTick();
   scrollInviteToTop();
   phasePanelRef.value?.classList.add('is-visible');
-  if (formScrollRef.value) {
-    rescanCornerSmoothing(formScrollRef.value);
-  }
   if (phase.value !== 'success') {
     merchantIdCopied.value = false;
     window.clearTimeout(copyResetTimer);

@@ -33,3 +33,19 @@
   font-display: swap;
   src: url('~/assets/fonts/EDSText-Bold.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~/assets/fonts/IBMPlexMono-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('~/assets/fonts/IBMPlexMono-Medium.ttf') format('truetype');
+}

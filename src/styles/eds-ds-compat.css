@@ -1,0 +1,8 @@
+/**
+ * Udun ↔ eds-website (2026-07) compatibility layer.
+ * Import after @eds/website-components/style.css so --eds-* / --scale-* exist.
+ * New code should prefer current DS names (--eds-*, --status-*, --avatar-lg, .eds-*).
+ */
+@import './eds-scale-compat.css';
+@import './eds-typography-compat.css';
+@import './eds-color-compat.css';

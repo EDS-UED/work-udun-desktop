@@ -7,7 +7,16 @@ import ProductWindowMock from '@/components/StoryPage/ProductWindowMock.vue';
 import GlobeVisual from '@/components/StoryPage/GlobeVisual.vue';
 import RotatingInline from '@/components/RotatingInline/RotatingInline.vue';
 import { siteContent, type SiteContent } from '@/content/siteContent';
+import InviteAndroidDownloadDialog from '@/components/InviteRegister/InviteAndroidDownloadDialog.vue';
+import InviteMacDownloadDialog from '@/components/InviteRegister/InviteMacDownloadDialog.vue';
+import {
+  DOWNLOAD_URLS,
+  detectClientPlatform,
+  type ClientPlatform,
+} from '@/utils/inviteRegister';
 import { publicAsset } from '@/utils/publicAsset';
+import DownloadStickyStoryBlock from '@/components/StoryPage/DownloadStickyStoryBlock.vue';
+import DownloadPlatformIcon from '@/components/StoryPage/DownloadPlatformIcon.vue';
 import { buildAssetRotationItems } from './showcaseGrid';
 import styles from './StoryPage.module.css';
 
@@ -31,11 +40,113 @@ let animationObserver: IntersectionObserver | undefined;
 const showcaseScrollEpsilon = 2;
 const showcaseFadeWidth = 'clamp(24px, 3.5vw, 48px)';
 const assetPlaceholders = buildAssetRotationItems(publicAsset);
+const downloadBrandIconSrc = publicAsset('/brand-appstore-icon.svg');
 const textLinkIconMask = `url(${publicAsset('/eds-arrow-right.svg')})`;
 const expertVideoSrc = publicAsset('/udun-expert-commentary.mp4');
 const arrowLeftSrc = publicAsset('/eds-arrow-left.svg');
 const arrowRightSrc = publicAsset('/eds-arrow-right.svg');
 const faviconSrc = publicAsset('/favicon.svg');
+const macDownloadOpen = ref(false);
+const androidDownloadOpen = ref(false);
+const clientPlatform = ref<ClientPlatform>('other');
+
+function openDownloadUrl(url: string) {
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function onDownloadHeroPrimary() {
+  switch (clientPlatform.value) {
+    case 'windows':
+      openDownloadUrl(DOWNLOAD_URLS.windows);
+      break;
+    case 'mac':
+      macDownloadOpen.value = true;
+      break;
+    case 'ios':
+      window.location.href = DOWNLOAD_URLS.appStore;
+      break;
+    case 'android':
+      androidDownloadOpen.value = true;
+      break;
+    default:
+      openDownloadUrl(DOWNLOAD_URLS.windows);
+      break;
+  }
+}
+
+const downloadPrimaryLabel = computed(() => {
+  switch (clientPlatform.value) {
+    case 'mac':
+      return t('invite.downloadMac');
+    case 'windows':
+      return t('invite.downloadWindows');
+    case 'ios':
+      return t('invite.downloadIos');
+    case 'android':
+      return t('invite.downloadAndroid');
+    default:
+      return t('invite.downloadWindows');
+  }
+});
+
+const downloadPlatformHint = computed(() => {
+  if (props.page !== 'download') return '';
+  return content.value.sections[0]?.title ?? '';
+});
+
+type DownloadPlatformKey = 'macOS' | 'Windows' | 'iOS' | 'Android';
+
+function normalizeDownloadPlatform(title: string): DownloadPlatformKey | null {
+  const value = title.trim();
+  if (value === 'macOS') return 'macOS';
+  if (value === 'Windows') return 'Windows';
+  if (value === 'iOS') return 'iOS';
+  if (value === 'Android') return 'Android';
+  return null;
+}
+
+function isDownloadPlatformPrimary(title: string) {
+  const key = normalizeDownloadPlatform(title);
+  if (!key) return false;
+  const byPlatform: Record<ClientPlatform, DownloadPlatformKey> = {
+    mac: 'macOS',
+    windows: 'Windows',
+    ios: 'iOS',
+    android: 'Android',
+    other: 'Windows',
+  };
+  return key === byPlatform[clientPlatform.value];
+}
+
+function downloadPlatformCategory(title: string) {
+  const key = normalizeDownloadPlatform(title);
+  if (key === 'macOS' || key === 'Windows') return t('downloadPage.categoryDesktop');
+  return t('downloadPage.categoryMobile');
+}
+
+function downloadPlatformCtaLabel(_title: string) {
+  return t('common.download');
+}
+
+function onDownloadPlatformCard(title: string) {
+  switch (normalizeDownloadPlatform(title)) {
+    case 'macOS':
+      macDownloadOpen.value = true;
+      break;
+    case 'Windows':
+      openDownloadUrl(DOWNLOAD_URLS.windows);
+      break;
+    case 'iOS':
+      window.location.href = DOWNLOAD_URLS.appStore;
+      break;
+    case 'Android':
+      androidDownloadOpen.value = true;
+      break;
+    default:
+      break;
+  }
+}
+
 const showcaseGridColumns = Array.from({ length: 15 }, (_, index) => {
   const x = index * 100;
   const floorX = 700 + (x - 700) * 1.35;
@@ -114,6 +225,9 @@ watch(homeCards, () => {
 });
 
 onMounted(() => {
+  if (import.meta.client) {
+    clientPlatform.value = detectClientPlatform();
+  }
   if (!pageRoot.value || typeof IntersectionObserver === 'undefined') return;
 
   animationObserver = new IntersectionObserver(
@@ -142,18 +256,45 @@ onMounted(() => {
     .forEach((region) => animationObserver?.observe(region));
 });
 
-onBeforeUnmount(() => animationObserver?.disconnect());
+onBeforeUnmount(() => {
+  animationObserver?.disconnect();
+});
 </script>
 
 <template>
   <article
     ref="pageRoot"
-    :class="styles.page"
+    :class="[
+      styles.page,
+      page === 'download' && styles.downloadPage,
+    ]"
     :style="{ '--text-link-icon-mask': textLinkIconMask }"
   >
-    <section :class="[styles.hero, page === 'home' && styles.homeHero]">
+    <div
+      v-if="page === 'download'"
+      :class="styles.downloadPageBackdrop"
+      aria-hidden="true"
+    />
+    <section
+      :class="[
+        styles.hero,
+        page === 'home' && styles.homeHero,
+        page === 'download' && styles.downloadHero,
+      ]"
+    >
       <div :class="styles.heroCopy" data-reveal data-animation-region>
-        <p v-if="content.eyebrow" :class="styles.eyebrow">{{ content.eyebrow }}</p>
+        <p v-if="content.eyebrow && page !== 'download'" :class="styles.eyebrow">
+          {{ content.eyebrow }}
+        </p>
+        <img
+          v-if="page === 'download'"
+          :src="downloadBrandIconSrc"
+          :class="styles.downloadHeroBrandIcon"
+          alt=""
+          width="80"
+          height="80"
+          decoding="async"
+        />
         <h1 :class="styles.heroTitle">{{ content.title }}</h1>
         <p v-if="page === 'home'" :class="styles.heroSubtitle">
           <template v-if="locale === 'en-US'">
@@ -166,8 +307,26 @@ onBeforeUnmount(() => animationObserver?.disconnect());
           </template>
         </p>
         <p v-else :class="styles.heroSubtitle">{{ content.subtitle }}</p>
+        <div v-if="page === 'download'" :class="styles.actions">
+          <BubbleButton>
+            <EgButton
+              :class="styles.homePrimaryAction"
+              size="lg"
+              type="button"
+              @click="onDownloadHeroPrimary"
+            >
+              {{ downloadPrimaryLabel }}
+            </EgButton>
+          </BubbleButton>
+        </div>
+        <p
+          v-if="page === 'download' && downloadPlatformHint"
+          :class="styles.downloadHeroPlatformHint"
+        >
+          {{ downloadPlatformHint }}
+        </p>
         <div
-          v-if="content.primaryCta || content.secondaryCta"
+          v-else-if="content.primaryCta || content.secondaryCta"
           :class="styles.actions"
         >
           <a
@@ -402,7 +561,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
       </div>
 
       <div
-        v-else
+        v-else-if="page !== 'download'"
         :class="styles.heroVisual"
         aria-hidden="true"
         data-reveal
@@ -417,18 +576,35 @@ onBeforeUnmount(() => animationObserver?.disconnect());
       </div>
     </section>
 
+    <template v-for="(section, sectionIndex) in content.sections" :key="section.title">
+    <DownloadStickyStoryBlock
+      v-if="page === 'download' && sectionIndex === 1"
+      :api-section="section"
+      :legacy-section="content.sections[2]!"
+      :favicon-src="faviconSrc"
+    />
     <section
-      v-for="(section, sectionIndex) in content.sections"
-      :id="sectionIndex === 0 ? 'features' : undefined"
-      :key="section.title"
+      v-else-if="!(page === 'download' && sectionIndex === 2)"
+      :id="
+        page === 'download' && sectionIndex === 0
+          ? 'downloads'
+          : sectionIndex === 0 && page !== 'download'
+            ? 'features'
+            : undefined
+      "
       :class="[
         styles.storySection,
         section.tone === 'soft' && styles.soft,
         section.tone === 'dark' && styles.dark,
         section.visual === 'globe' && styles.globeStorySection,
+        page === 'download' && sectionIndex === 0 && styles.downloadPlatformsStory,
+        section.visual === 'apiIntegration' &&
+          page !== 'download' &&
+          styles.downloadApiStorySection,
       ]"
-      data-reveal
-      data-animation-region
+      :data-no-corner-smoothing="page === 'download' && sectionIndex === 0 ? '' : undefined"
+      :data-reveal="page === 'download' && sectionIndex === 0 ? undefined : ''"
+      :data-animation-region="page === 'download' && sectionIndex === 0 ? undefined : ''"
     >
       <div
         v-if="section.visual === 'globe'"
@@ -475,6 +651,53 @@ onBeforeUnmount(() => animationObserver?.disconnect());
       </div>
 
       <template v-else>
+        <template v-if="page === 'download' && sectionIndex === 0 && section.features">
+          <div :class="styles.downloadPlatformGrid">
+            <article
+              v-for="feature in section.features"
+              :key="feature.title"
+              :class="[
+                styles.downloadPlatformCard,
+                isDownloadPlatformPrimary(feature.title) && styles.downloadPlatformCardPrimary,
+              ]"
+              data-reveal
+            >
+              <div :class="styles.downloadPlatformIcon" aria-hidden="true">
+                <DownloadPlatformIcon
+                  v-if="normalizeDownloadPlatform(feature.title)"
+                  :platform="normalizeDownloadPlatform(feature.title)!"
+                />
+              </div>
+              <p :class="styles.downloadPlatformCategory">
+                {{ downloadPlatformCategory(feature.title) }}
+              </p>
+              <h3 :class="styles.downloadPlatformTitle">{{ feature.title }}</h3>
+              <p :class="styles.downloadPlatformBody">{{ feature.body }}</p>
+              <div :class="styles.downloadPlatformCardActions">
+                <div
+                  :class="[
+                    styles.downloadPlatformCardCta,
+                    isDownloadPlatformPrimary(feature.title) &&
+                      styles.downloadPlatformCardCtaPrimary,
+                  ]"
+                >
+                  <EgButton
+                    type="button"
+                    :variant="
+                      isDownloadPlatformPrimary(feature.title) ? 'solid' : 'outline'
+                    "
+                    tone="brand"
+                    size="md"
+                    @click="onDownloadPlatformCard(feature.title)"
+                  >
+                    {{ downloadPlatformCtaLabel(feature.title) }}
+                  </EgButton>
+                </div>
+              </div>
+            </article>
+          </div>
+        </template>
+        <template v-else>
         <div :class="styles.sectionIntro">
           <p v-if="section.eyebrow" :class="styles.eyebrow">{{ section.eyebrow }}</p>
           <h2 :class="styles.sectionTitle">{{ section.title }}</h2>
@@ -499,7 +722,87 @@ onBeforeUnmount(() => animationObserver?.disconnect());
         </div>
 
         <div
-          v-if="section.visual && !(page === 'home' && sectionIndex === 0)"
+          v-if="section.visual === 'apiIntegration' && page !== 'download'"
+          :class="styles.downloadApiVisual"
+          aria-hidden="true"
+          data-reveal
+        >
+          <div :class="styles.downloadApiScene">
+            <div :class="styles.downloadApiPanel">
+              <div :class="styles.downloadApiPanelHeader">
+                <span :class="styles.downloadApiPanelDots" aria-hidden="true">
+                  <i /><i /><i />
+                </span>
+                <span :class="styles.downloadApiPanelTitle">REST API</span>
+                <span :class="styles.downloadApiPanelBadge">
+                  <span :class="styles.downloadApiPanelBadgeDot" />
+                  Live
+                </span>
+              </div>
+
+              <div :class="styles.downloadApiFlow">
+                <div :class="styles.downloadApiFlowNode">
+                  <div
+                    :class="[
+                      'eds-corner-smoothed',
+                      styles.downloadApiFlowTile,
+                      styles.downloadApiFlowTileClient,
+                    ]"
+                  >
+                    <span :class="styles.downloadApiFlowCode" aria-hidden="true">{ }</span>
+                  </div>
+                </div>
+                <div :class="styles.downloadApiFlowTrack" aria-hidden="true">
+                  <span :class="styles.downloadApiFlowTrackLine" />
+                  <span :class="styles.downloadApiFlowTrackPulse" />
+                  <span :class="styles.downloadApiFlowTrackPulseReturn" />
+                </div>
+                <div :class="styles.downloadApiFlowNode">
+                  <div
+                    :class="[
+                      'eds-corner-smoothed',
+                      styles.downloadApiFlowTile,
+                      styles.downloadApiFlowTileWallet,
+                    ]"
+                  >
+                    <img :src="faviconSrc" alt="" width="32" height="32" decoding="async" />
+                  </div>
+                </div>
+              </div>
+
+              <ol :class="styles.downloadApiLog">
+                <li :class="['eds-corner-smoothed', styles.downloadApiLogItem]">
+                  <span :class="styles.downloadApiLogMethod">POST</span>
+                  <span :class="styles.downloadApiLogPath">/v1/withdraw</span>
+                  <span :class="styles.downloadApiLogStatus">200</span>
+                </li>
+                <li
+                  :class="[
+                    'eds-corner-smoothed',
+                    styles.downloadApiLogItem,
+                    styles.downloadApiLogItemAlt,
+                  ]"
+                >
+                  <span :class="styles.downloadApiLogMethod">POST</span>
+                  <span :class="styles.downloadApiLogPath">/v1/transaction/callback</span>
+                  <span :class="[styles.downloadApiLogStatus, styles.downloadApiLogStatusMuted]">202</span>
+                </li>
+                <li :class="['eds-corner-smoothed', styles.downloadApiLogItem]">
+                  <span :class="styles.downloadApiLogMethod">POST</span>
+                  <span :class="styles.downloadApiLogPath">/v1/address/create</span>
+                  <span :class="styles.downloadApiLogStatus">201</span>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-else-if="
+            section.visual &&
+            !(page === 'home' && sectionIndex === 0) &&
+            !(page === 'download' && sectionIndex === 0)
+          "
           :class="[styles.miniVisual, styles[section.visual]]"
           aria-hidden="true"
         >
@@ -559,6 +862,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
             </template>
           </article>
         </div>
+        </template>
       </template>
 
       <div
@@ -582,6 +886,7 @@ onBeforeUnmount(() => animationObserver?.disconnect());
         </template>
       </div>
     </section>
+    </template>
 
     <section v-if="content.closing" :class="styles.closing" data-reveal>
       <div>
@@ -607,5 +912,16 @@ onBeforeUnmount(() => animationObserver?.disconnect());
         </RouterLink>
       </div>
     </section>
+
+    <InviteMacDownloadDialog
+      v-if="page === 'download'"
+      :open="macDownloadOpen"
+      @close="macDownloadOpen = false"
+    />
+    <InviteAndroidDownloadDialog
+      v-if="page === 'download'"
+      :open="androidDownloadOpen"
+      @close="androidDownloadOpen = false"
+    />
   </article>
 </template>

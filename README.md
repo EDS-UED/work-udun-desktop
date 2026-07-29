@@ -25,7 +25,7 @@ Projects/
 | `@eds/website-tokens` | `link:../eds-website/packages/tokens` |
 | `@eds/website-components` | `link:../eds-website/packages/components` |
 
-设计系统近期变更与 Udun 迁移说明见 **[docs/EDS-WEBSITE-SYNC.md](./docs/EDS-WEBSITE-SYNC.md)**（含颜色语义、`EgButton` Event overlay、`EgToggle` → `EgCheckbox` / `EgRadio` 等）。
+设计系统近期变更与 Udun 迁移说明见 **[docs/EDS-WEBSITE-SYNC.md](./docs/EDS-WEBSITE-SYNC.md)**。同步后通过 **`src/styles/eds-ds-compat.css`** 对齐旧版 `--typography-*` / `--control-*` / 语义色变量；可运行 **`pnpm verify:ds-tokens`** 自检。
 
 ## 字体（EDS Text）
 

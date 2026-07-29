@@ -147,7 +147,7 @@
   position: absolute;
   top: 100%;
   left: 50%;
-  width: max(100%, 520px);
+  width: max(100%, calc(65 * var(--scale-base)));
   height: var(--scale-05);
   transform: translateX(-50%);
 }
@@ -205,16 +205,21 @@
   }
 }
 
+.productMenuDropdown {
+  width: min(calc(100vw - var(--spacing-6)), calc(65 * var(--scale-base)));
+  min-width: min(calc(65 * var(--scale-base)), calc(100vw - var(--spacing-6)));
+}
+
 .productMenu {
   display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
   gap: var(--spacing-05);
-  width: 520px;
-  min-width: 520px;
-  border-radius: var(--radius-md);
+  width: 100%;
 }
 
 .productCard {
+  min-width: 0;
   min-height: 150px;
   display: flex;
   flex-direction: column;
@@ -288,14 +293,24 @@
   box-shadow: none;
 }
 
+.dropdownOption:focus-visible {
+  color: var(--text-brand-primary);
+}
+
 .dropdownOption:focus:not(:hover),
 .dropdownOption:focus-visible:not(:hover) {
   background-color: transparent;
-  color: var(--text-base-primary);
 }
 
+/* Current locale — brand color (matches InviteRegister localeOptionActive) */
 .dropdownOptionActive {
-  color: var(--text-base-primary);
+  color: var(--text-brand-primary);
+}
+
+.dropdownOptionActive:hover,
+.dropdownOptionActive:focus,
+.dropdownOptionActive:focus-visible {
+  color: var(--text-brand-primary);
 }
 
 .dropdownOptionActive:focus,
@@ -307,7 +322,7 @@
 .dropdownOptionActive:focus:not(:hover),
 .dropdownOptionActive:focus-visible:not(:hover) {
   background-color: transparent;
-  color: var(--text-base-primary);
+  color: var(--text-brand-primary);
 }
 
 .controls {

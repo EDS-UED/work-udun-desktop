@@ -208,11 +208,12 @@ onBeforeUnmount(() => {
             :data-flyout-open="productsOpen || undefined"
             :class="[
               styles.dropdownMenu,
-              styles.productMenu,
+              styles.productMenuDropdown,
               productsOpen && styles.dropdownMenuOpen,
             ]"
             :hidden="!hoverFlyouts && !productsOpen ? true : undefined"
           >
+            <div :class="styles.productMenu">
             <RouterLink
               to="/wallet"
               :class="[
@@ -235,6 +236,7 @@ onBeforeUnmount(() => {
               <strong>Multi-Party Computation</strong>
               <small>{{ t('common.mpcNote') }}</small>
             </RouterLink>
+            </div>
           </div>
         </div>
 

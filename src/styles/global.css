@@ -1,6 +1,6 @@
 @import './fonts.css';
 @import '@eds/website-components/style.css';
-@import './eds-typography-compat.css';
+@import './eds-ds-compat.css';
 
 :root {
   --site-header-brand-logo-height: var(--control-icon-xs);
@@ -175,15 +175,11 @@ a {
     opacity var(--site-hover-duration) var(--site-hover-easing);
 }
 
-/* EgInput 内层透明底：勿对 background 做过渡（避免移动端点击闪灰） */
+/* EgInput：与 showcase 一致，内层仅字色过渡，避免与 .field 的 background/box-shadow 动效冲突 */
 :where(input[class*='_input_'], textarea[class*='_input_'], input[class*='__input'], textarea[class*='__input']) {
   -webkit-tap-highlight-color: transparent;
-  transition:
-    color var(--site-hover-duration) var(--site-hover-easing),
-    border-color var(--site-hover-duration) var(--site-hover-easing),
-    outline-color var(--site-hover-duration) var(--site-hover-easing),
-    box-shadow var(--site-hover-duration) var(--site-hover-easing),
-    opacity var(--site-hover-duration) var(--site-hover-easing);
+  transition: color var(--eds-motion-control-duration, var(--site-hover-duration))
+    var(--eds-motion-ease-in-out, var(--site-hover-easing));
 }
 
 :where(a, button):hover:not(
@@ -199,7 +195,9 @@ a {
     [class*='showcaseCard'],
     [class*='showcaseCardsNav'],
     [class*='brand'],
-    [class*='textLink']
+    [class*='textLink'],
+    [class*='_clearButton_'],
+    [class*='_maxButton_']
   ) {
   box-shadow: inset 0 0 0 999px var(--event-hover);
 }
@@ -313,9 +311,9 @@ html.is-scrolling [data-animation-region] *::after {
   :where(
     a,
     button,
-    input,
+    input:not([class*='_input_']):not([class*='__input']),
     select,
-    textarea,
+    textarea:not([class*='_input_']):not([class*='__input']),
     summary,
     [role='button'],
     [role='link'],
