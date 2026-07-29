@@ -11,7 +11,9 @@ CI（`.github/workflows/deploy-pages.yml`）会 checkout **`${{ github.repositor
 1. `cd ../eds-website` → commit & **`git push origin main`**
 2. `cd ../udun-website-new` →（如有站点改动）commit & **`git push origin main`**
 
-推送 Udun  alone 不会带上未发布的 DS 变更。
+推送 Udun alone 不会带上未发布的 DS 变更。
+
+**维护约定**：需要存档、部署或保持线上与本地一致时，由 agent 自动完成上述两步 push，无需你手动操作 git。
 
 **Showcase 对照**：`eds-website` → `pnpm dev:showcase`（默认 http://localhost:5175），组件页 `/components/*`，Token 页 `/tokens`（Color Semantic 已按 Box / Event / Stroke … 分组锚点）。
 
