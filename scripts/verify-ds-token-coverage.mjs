@@ -9,6 +9,10 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const edsRoot = path.resolve(
+  process.env.EDS_WEBSITE_DIR || path.join(root, '../eds-website'),
+);
+
 const srcFiles = execSync('rg -l "var\\(--" src --glob "*.css" --glob "*.vue"', {
   cwd: root,
   encoding: 'utf8',
@@ -26,8 +30,8 @@ for (const rel of srcFiles) {
 }
 
 const defSources = [
-  path.join(root, '../eds-website/packages/components/dist/index.css'),
-  path.join(root, '../eds-website/packages/tokens/dist/css/index.css'),
+  path.join(edsRoot, 'packages/components/dist/index.css'),
+  path.join(edsRoot, 'packages/tokens/dist/css/index.css'),
   path.join(root, 'src/styles/eds-ds-compat.css'),
   path.join(root, 'src/styles/eds-scale-compat.css'),
   path.join(root, 'src/styles/eds-typography-compat.css'),
@@ -46,7 +50,8 @@ for (const file of defSources) {
   for (const m of content.matchAll(/(--[a-zA-Z0-9-]+)\s*:/g)) defs.add(m[1]);
 }
 
-const localOnly = /^--(site-|invite-|showcase-|page-|home-|bubble-|reveal-|text-link-icon-mask)/;
+const localOnly =
+  /^--(site-|invite-|showcase-|page-|home-|bubble-|reveal-|text-link-icon-mask|download-)/;
 const missing = [...used].filter((v) => !defs.has(v) && !localOnly.test(v)).sort();
 
 if (missing.length) {

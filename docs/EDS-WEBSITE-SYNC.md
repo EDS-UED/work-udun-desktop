@@ -2,6 +2,17 @@
 
 Udun 通过 `link:../eds-website/packages/*` 消费 EverGreen Website 包。本地 `pnpm dev` 的 `predev` 会构建 tokens 与 components；拉取或切换 `eds-website` 分支后请先在该仓库执行 `pnpm build:tokens && pnpm build:components`，再在本项目验证。
 
+## GitHub Pages 双仓库（必守）
+
+CI（`.github/workflows/deploy-pages.yml`）会 checkout **`${{ github.repository_owner }}/eds-website`** 与 **`udun-website-new` 同级目录**，再 build DS → `pnpm verify:ds-tokens` → `pnpm generate`。
+
+**本地改了 `eds-website` 但未 push 到 GitHub 时，线上样式/字体 token 会落后于本机。** 发布顺序：
+
+1. `cd ../eds-website` → commit & **`git push origin main`**
+2. `cd ../udun-website-new` →（如有站点改动）commit & **`git push origin main`**
+
+推送 Udun  alone 不会带上未发布的 DS 变更。
+
 **Showcase 对照**：`eds-website` → `pnpm dev:showcase`（默认 http://localhost:5175），组件页 `/components/*`，Token 页 `/tokens`（Color Semantic 已按 Box / Event / Stroke … 分组锚点）。
 
 ---

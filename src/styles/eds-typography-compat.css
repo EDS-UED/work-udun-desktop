@@ -5,7 +5,7 @@
 
 :root {
   --font-family-text: var(--eds-family-sans);
-  --font-family-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-family-mono: var(--eds-family-mono);
   --typography-display-large-size: var(--eds-display-large-size);
   --typography-display-large-weight: var(--eds-display-large-weight);
   --typography-display-large-line-height: var(--eds-display-large-line-height);

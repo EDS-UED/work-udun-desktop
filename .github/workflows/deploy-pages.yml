@@ -58,6 +58,12 @@ jobs:
         working-directory: udun-website-new
         run: pnpm install --frozen-lockfile
 
+      - name: Verify DS token coverage
+        working-directory: udun-website-new
+        env:
+          EDS_WEBSITE_DIR: ${{ github.workspace }}/eds-website
+        run: pnpm verify:ds-tokens
+
       - name: Generate static site
         working-directory: udun-website-new
         run: pnpm generate
