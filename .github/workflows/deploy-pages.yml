@@ -61,7 +61,7 @@ jobs:
       - name: Verify DS token coverage
         working-directory: udun-website-new
         env:
-          EDS_WEBSITE_DIR: ${{ github.workspace }}/../eds-website
+          EDS_WEBSITE_DIR: ${{ github.workspace }}/eds-website
         run: pnpm verify:ds-tokens
 
       - name: Generate static site
