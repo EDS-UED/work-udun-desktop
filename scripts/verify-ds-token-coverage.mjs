@@ -4,7 +4,6 @@
  * Exits 1 and lists gaps when tokens are missing (post eds-website sync).
  */
 import fs from 'node:fs';
-import { execSync } from 'node:child_process';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -13,18 +12,26 @@ const edsRoot = path.resolve(
   process.env.EDS_WEBSITE_DIR || path.join(root, '../eds-website'),
 );
 
-const srcFiles = execSync('rg -l "var\\(--" src --glob "*.css" --glob "*.vue"', {
-  cwd: root,
-  encoding: 'utf8',
-})
-  .trim()
-  .split('\n')
-  .filter(Boolean);
+function walkSourceFiles(dir, out = []) {
+  for (const name of fs.readdirSync(dir)) {
+    const full = path.join(dir, name);
+    const stat = fs.statSync(full);
+    if (stat.isDirectory()) {
+      walkSourceFiles(full, out);
+      continue;
+    }
+    if (full.endsWith('.css') || full.endsWith('.vue')) out.push(full);
+  }
+  return out;
+}
+
+const srcDir = path.join(root, 'src');
+const srcFiles = walkSourceFiles(srcDir);
 
 const used = new Set();
 const re = /var\((--[a-zA-Z0-9-]+)\)/g;
-for (const rel of srcFiles) {
-  const content = fs.readFileSync(path.join(root, rel), 'utf8');
+for (const file of srcFiles) {
+  const content = fs.readFileSync(file, 'utf8');
   let m;
   while ((m = re.exec(content))) used.add(m[1]);
 }
