@@ -52,6 +52,7 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm build:tokens
+          pnpm build:animations
           pnpm build:components
 
       - name: Install dependencies
