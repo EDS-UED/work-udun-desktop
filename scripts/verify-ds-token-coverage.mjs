@@ -25,6 +25,25 @@ function walkSourceFiles(dir, out = []) {
   return out;
 }
 
+function readCssWithImports(file, seen = new Set()) {
+  const resolved = path.resolve(file);
+  if (seen.has(resolved)) return '';
+  seen.add(resolved);
+
+  const content = fs.readFileSync(resolved, 'utf8');
+  const importRe = /@import\s+['"]([^'"]+)['"]\s*;/g;
+  let merged = content;
+  let match;
+  while ((match = importRe.exec(content))) {
+    const href = match[1];
+    if (!href.startsWith('.') && !href.startsWith('/')) continue;
+    const imported = path.join(path.dirname(resolved), href);
+    if (!fs.existsSync(imported)) continue;
+    merged += readCssWithImports(imported, seen);
+  }
+  return merged;
+}
+
 const srcDir = path.join(root, 'src');
 const srcFiles = walkSourceFiles(srcDir);
 
@@ -53,7 +72,7 @@ for (const file of defSources) {
     console.error(`Missing definition source: ${file}`);
     process.exit(1);
   }
-  const content = fs.readFileSync(file, 'utf8');
+  const content = readCssWithImports(file);
   for (const m of content.matchAll(/(--[a-zA-Z0-9-]+)\s*:/g)) defs.add(m[1]);
 }
 
