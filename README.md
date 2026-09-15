@@ -1,10 +1,11 @@
-# udun-website-new
+# work-udun-desktop
 
 Udun 官网项目，基于 EverGreen Design System (Website) 构建。
 
 ## 线上地址
 
-GitHub Pages：https://theyangsong.github.io/udun-website-new/
+- GitHub Pages：https://eds-ued.github.io/work-udun-desktop/
+- 仓库：https://github.com/EDS-UED/work-udun-desktop
 
 ## 前置要求
 
@@ -15,7 +16,7 @@ GitHub Pages：https://theyangsong.github.io/udun-website-new/
 ```
 Projects/
   eds-website/       ← 设计系统规范包
-  udun-website-new/  ← 本项目
+  work-udun-desktop/  ← 本项目（EDS-UED/work-udun-desktop）
 ```
 
 ## 设计系统依赖
@@ -50,4 +51,4 @@ pnpm build
 pnpm generate
 ```
 
-GitHub Pages 会在推送到 `main` 后自动检出同账户下的 **`eds-website`** 仓库（见 `.github/workflows/deploy-pages.yml` 中 `EDS_WEBSITE_GITHUB_REPO`，检出目录为 `eds-website/`）、构建设计系统并发布本站。
+GitHub Pages 会在推送到 `main` 后自动检出组织 **`EDS-UED/eds-website`**（见 `.github/workflows/deploy-pages.yml` 中 `EDS_WEBSITE_GITHUB_REPO`，检出目录为 `eds-website/`）、构建设计系统并发布本站。

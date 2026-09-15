@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Push eds-website + udun-website-new after GitHub rename. Run in macOS Terminal (not only Cursor).
+# Push eds-website + work-udun-desktop to EDS-UED org. Run in macOS Terminal (not only Cursor).
 set -euo pipefail
 
 git config --global http.version HTTP/1.1
@@ -24,6 +24,6 @@ push_repo() {
 }
 
 push_repo /Users/DanBaby/Projects/eds-website eds-website
-push_repo /Users/DanBaby/Projects/udun-website-new udun-website-new
+push_repo /Users/DanBaby/Projects/work-udun-desktop work-udun-desktop
 
-echo "Done. Check Actions: https://github.com/theyangsong/udun-website-new/actions"
+echo "Done. Check Actions: https://github.com/EDS-UED/work-udun-desktop/actions"

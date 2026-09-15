@@ -17,8 +17,8 @@ fi
 
 gh auth setup-git
 TOKEN="$(gh auth token)"
-REMOTE="https://x-access-token:${TOKEN}@github.com/theyangsong/udun-website-new.git"
+REMOTE="https://x-access-token:${TOKEN}@github.com/EDS-UED/work-udun-desktop.git"
 
-echo "Pushing main to theyangsong/udun-website-new …"
+echo "Pushing main to EDS-UED/work-udun-desktop …"
 git push "$REMOTE" main
 echo "Done."

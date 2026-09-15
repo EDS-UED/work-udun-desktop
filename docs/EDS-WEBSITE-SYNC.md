@@ -4,12 +4,12 @@ Udun 通过 `link:../eds-website/packages/*` 消费 EverGreen Website 包。本�
 
 ## GitHub Pages 双仓库（必守）
 
-CI（`.github/workflows/deploy-pages.yml`）会 checkout **`${{ github.repository_owner }}/eds-website`** 与 **`udun-website-new` 同级目录**，再 build DS → `pnpm verify:ds-tokens` → `pnpm generate`。
+CI（`.github/workflows/deploy-pages.yml`）会 checkout **`EDS-UED/eds-website`** 与 **`work-udun-desktop` 同级目录**，再 build DS → `pnpm verify:ds-tokens` → `pnpm generate`。
 
 **本地改了 `eds-website` 但未 push 到 GitHub 时，线上样式/字体 token 会落后于本机。** 发布顺序：
 
 1. `cd ../eds-website` → commit & **`git push origin main`**
-2. `cd ../udun-website-new` →（如有站点改动）commit & **`git push origin main`**
+2. `cd ../work-udun-desktop` →（如有站点改动）commit & **`git push origin main`**
 
 推送 Udun alone 不会带上未发布的 DS 变更。
 
@@ -25,7 +25,7 @@ CI（`.github/workflows/deploy-pages.yml`）会 checkout **`${{ github.repositor
 
 ```bash
 cd ../eds-website && pnpm build:tokens && pnpm build:components
-cd ../udun-website-new && rm -rf node_modules/.vite .nuxt
+cd ../work-udun-desktop && rm -rf node_modules/.vite .nuxt
 pnpm dev   # 或 pnpm build
 ```
 
@@ -98,7 +98,7 @@ Udun 当前代码未引用上表旧名；**`var(--box-page)`、`var(--event-hove
 
 ```bash
 cd ../eds-website && pnpm build:tokens && pnpm build:components
-cd ../udun-website-new && pnpm dev   # predev 也会 build；建议先显式 build 一次
+cd ../work-udun-desktop && pnpm dev   # predev 也会 build；建议先显式 build 一次
 ```
 
 ### 验证清单（Udun）
@@ -145,7 +145,7 @@ Website 控件默认 **Body/Small（16px）**，见 eds-website `typography-defa
 
 ```bash
 cd ../eds-website && pnpm build:tokens && pnpm build:components
-cd ../udun-website-new && pnpm typecheck && pnpm build
+cd ../work-udun-desktop && pnpm typecheck && pnpm build
 ```
 
 - [ ] 邀请注册页：协议 Checkbox、联系方式 Radio 交互与样式

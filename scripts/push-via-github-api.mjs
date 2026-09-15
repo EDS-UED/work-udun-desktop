@@ -8,7 +8,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const repoRoot = join(import.meta.dirname, '..');
-const REPO = 'theyangsong/udun-website-new';
+const REPO = 'EDS-UED/work-udun-desktop';
 const BASE_SHA = process.env.GITHUB_BASE_SHA || 'd8d210ddd14ec7a814660dc2ee2b5a4fa9245482';
 const COMMIT_MESSAGE =
   process.env.GITHUB_COMMIT_MESSAGE ||

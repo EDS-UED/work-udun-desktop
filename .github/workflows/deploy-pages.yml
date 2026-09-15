@@ -25,7 +25,7 @@ jobs:
       - name: Checkout website
         uses: actions/checkout@v4
         with:
-          path: udun-website-new
+          path: work-udun-desktop
 
       - name: Checkout design-system website
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
           node-version: 22
           cache: pnpm
           cache-dependency-path: |
-            udun-website-new/pnpm-lock.yaml
+            work-udun-desktop/pnpm-lock.yaml
             eds-website/pnpm-lock.yaml
 
       - name: Install & build design system
@@ -55,25 +55,25 @@ jobs:
           pnpm build:components
 
       - name: Install dependencies
-        working-directory: udun-website-new
+        working-directory: work-udun-desktop
         run: pnpm install --frozen-lockfile
 
       - name: Verify DS token coverage
-        working-directory: udun-website-new
+        working-directory: work-udun-desktop
         env:
           EDS_WEBSITE_DIR: ${{ github.workspace }}/eds-website
         run: pnpm verify:ds-tokens
 
       - name: Generate static site
-        working-directory: udun-website-new
+        working-directory: work-udun-desktop
         run: pnpm generate
         env:
-          NUXT_APP_BASE_URL: /udun-website-new/
+          NUXT_APP_BASE_URL: /work-udun-desktop/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: udun-website-new/.output/public
+          path: work-udun-desktop/.output/public
 
   deploy:
     needs: build
